@@ -27,13 +27,13 @@
    <children>
       <Label alignment="CENTER" text="Email :" GridPane.rowIndex="1" />
       <Label text="Mot de passe :" GridPane.rowIndex="3" />
-      <TextField prefHeight="26.0" prefWidth="283.0" GridPane.rowIndex="2">
+      <TextField fx:id="email" prefHeight="26.0" prefWidth="283.0" GridPane.rowIndex="2">
          <cursor>
             <Cursor fx:constant="TEXT" />
          </cursor>
       </TextField>
-      <Hyperlink onMouseClicked="#onMouseClick" text="Créer un compte" GridPane.halignment="LEFT" GridPane.rowIndex="5" />
-      <Button mnemonicParsing="false" onMouseClicked="#onButtonClick" prefHeight="0.0" prefWidth="85.0" text="Se connecter" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+      <Hyperlink fx:id="link" onAction="#userCreateAccount" text="Créer un compte" GridPane.halignment="LEFT" GridPane.rowIndex="5" />
+      <Button fx:id="login" mnemonicParsing="false" onAction="#userLogIn" prefHeight="0.0" prefWidth="85.0" text="Se connecter" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
          <GridPane.margin>
             <Insets />
          </GridPane.margin>
@@ -41,11 +41,11 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <Label fx:id="welcomeLabel" prefHeight="27.0" prefWidth="94.0" text="Bienvenue">
+      <Label prefHeight="27.0" prefWidth="94.0" text="Bienvenue">
          <font>
             <Font size="18.0" />
          </font></Label>
-      <PasswordField GridPane.rowIndex="4" />
+      <PasswordField fx:id="password" GridPane.rowIndex="4" />
    </children>
    <padding>
       <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
