@@ -13,11 +13,22 @@ public class App extends Application {
 
     private static Stage stg;
 
+    public static void main(String[] args) {
+        launch();
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
 
         stg = stage;
-        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
+        Parent root;
+
+        if (APIConnectionHandler.tokenExistsAndIsValid()) {
+            root = FXMLLoader.load(getClass().getResource("main.fxml"));
+        } else { // Si le token n'est pas/plus valide, chargement de la fenêtre de login
+            root = FXMLLoader.load(getClass().getResource("login.fxml"));
+        }
+
         stage.setResizable(false);
         stage.getIcons().add(new Image(getClass().getResourceAsStream("pdf_icon.png")));
         stage.setTitle("PDF Authenticator");
@@ -28,9 +39,5 @@ public class App extends Application {
     public void changeScene(String fxml) throws IOException {
         Parent pane = FXMLLoader.load(getClass().getResource(fxml));
         stg.setScene(new Scene(pane));
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }

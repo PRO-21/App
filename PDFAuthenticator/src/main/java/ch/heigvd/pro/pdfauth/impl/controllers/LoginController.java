@@ -1,6 +1,7 @@
 package ch.heigvd.pro.pdfauth.impl.controllers;
 
 
+import ch.heigvd.pro.pdfauth.impl.APIConnectionHandler;
 import ch.heigvd.pro.pdfauth.impl.App;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,13 +9,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import org.json.JSONObject;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.URL;
+
 
 public class LoginController {
 
@@ -35,37 +34,31 @@ public class LoginController {
 
         App a = new App();
 
-        URL url = new URL("https://pro.simeunovic.ch:8022/protest/api/auth");
-        HttpURLConnection con = (HttpURLConnection)url.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setRequestProperty("Accept", "application/json");
-        con.setDoOutput(true);
+        HttpURLConnection conn = APIConnectionHandler.getConnection();
 
         String jsonInputString = "{\"auth_type\": \"credentials\"," +
                                   "\"email\": \"" + email.getText() + "\"," +
-                                  "\"password\": \"" + password.getText() + "\",}";
+                                  "\"password\": \"" + password.getText() + "\"}";
 
-        // Exception lors de la récupération du stream
-        try (BufferedOutputStream bos = new BufferedOutputStream(con.getOutputStream())) {
-            byte[] input = jsonInputString.getBytes();
-            bos.write(input, 0, input.length);
-            bos.flush();
-        }
+        APIConnectionHandler.sendToAPI(conn, jsonInputString);
+        String response = APIConnectionHandler.recvFromAPI(conn);
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
-            StringBuilder response = new StringBuilder();
-            String responseLine;
-            while((responseLine = br.readLine()) != null) {
-                response.append(responseLine.trim());
-            }
-            System.out.println(response.toString());
-        }
+        JSONObject obj = new JSONObject(response);
+        int HttpCode = obj.getJSONObject("status").getInt("code");
 
+        if (HttpCode == 200) {
 
+            String token = obj.getJSONObject("data").getString("token");
 
-        if (email.getText().equals("test@test.test") && password.getText().equals("1234")) {
+            PrintWriter printWriter = new PrintWriter(new FileWriter("src/main/resources/ch/heigvd/pro/pdfauth/impl/token"));
+            printWriter.print(token);
+            printWriter.close();
+
+            // Accès à la fenêtre principale
             a.changeScene("main.fxml");
+        }
+        else {
+            System.out.println("Erreur de connexion"); //TODO : Rendre un peu plus verbeux
         }
     }
 
