@@ -5,10 +5,7 @@ import ch.heigvd.pro.pdfauth.impl.APIConnectionHandler;
 import ch.heigvd.pro.pdfauth.impl.App;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -46,6 +43,7 @@ public class LoginController {
         JSONObject obj = new JSONObject(response);
         int HttpCode = obj.getJSONObject("status").getInt("code");
 
+        // Si la requête est valide
         if (HttpCode == 200) {
 
             String token = obj.getJSONObject("data").getString("token");
@@ -57,13 +55,22 @@ public class LoginController {
             // Accès à la fenêtre principale
             a.changeScene("main.fxml");
         }
-        else {
-            System.out.println("Erreur de connexion"); //TODO : Rendre un peu plus verbeux
+        else { // Sinon affiche une erreur et demande de retaper l'email et le mot de passe
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de connexion");
+            alert.setHeaderText("Veuillez réessayer");
+            String cause = obj.getJSONObject("status").getString("message");
+            alert.setContentText(cause);
+            alert.showAndWait();
+            email.requestFocus();
+            password.clear();
         }
     }
 
     public void userCreateAccount(ActionEvent actionEvent) {
         App a = new App();
+
+        // TODO : Rediriger sur la page de création de compte du site web
         a.getHostServices().showDocument("https://www.google.ch");
     }
 }
