@@ -21,8 +21,8 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
     - name: Install the dependencies
-      working-directory: .
+      working-directory: ./PDFAuthenticator
       run: mvn clean install -DskipTests=true
     - name: Run the tests
-      working-directory: .
+      working-directory: ./PDFAuthenticator
       run: mvn test
