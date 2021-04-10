@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AuthenticationTest {
+public class AuthenticationTests {
 
     static String token = "";
     static File tokenFile = null;
@@ -68,4 +68,3 @@ public class AuthenticationTest {
         Assertions.assertTrue(tokenFile.delete());
     }
 }
-
