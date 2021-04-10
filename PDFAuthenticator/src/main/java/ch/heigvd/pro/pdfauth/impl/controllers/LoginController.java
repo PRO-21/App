@@ -1,7 +1,6 @@
 package ch.heigvd.pro.pdfauth.impl.controllers;
 
-
-import ch.heigvd.pro.pdfauth.impl.APIConnectionHandler;
+import ch.heigvd.pro.pdfauth.impl.api.APIConnectionHandler;
 import ch.heigvd.pro.pdfauth.impl.App;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,22 +10,35 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 
-
+// Classe permettant de récupérer les valeurs des champs selon les events qui se passe sur la fenêtre de connexion
 public class LoginController {
 
     @FXML
     private TextField email;
     @FXML
-    private Hyperlink link;
-    @FXML
-    private Button login;
-    @FXML
     private PasswordField password;
 
-    public void userLogIn(ActionEvent actionEvent) throws IOException {
-        checkLogin();
+    /**
+     * Fonction appelée lorsque l'utilisateur appuie sur le bouton "Se connecter"
+     * @param actionEvent -
+     */
+    public void userLogIn(ActionEvent actionEvent) {
+
+        try {
+            checkLogin();
+        }
+        catch (IOException ex) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+        }
     }
 
+    /**
+     * Fonction permettant de vérifier les identifiants de l'utilisateur en communicant avec l'API
+     * @throws IOException
+     */
     private void checkLogin() throws IOException {
 
         App a = new App();
@@ -47,10 +59,7 @@ public class LoginController {
         if (HttpCode == 200) {
 
             String token = obj.getJSONObject("data").getString("token");
-
-            PrintWriter printWriter = new PrintWriter(new FileWriter("src/main/resources/ch/heigvd/pro/pdfauth/impl/token"));
-            printWriter.print(token);
-            printWriter.close();
+            APIConnectionHandler.createToken(token, "src/main/resources/ch/heigvd/pro/pdfauth/impl/token");
 
             // Accès à la fenêtre principale
             a.changeScene("main.fxml");
@@ -67,6 +76,10 @@ public class LoginController {
         }
     }
 
+    /**
+     * Fonction appelée lorsque l'utilisateur clique sur le lien pour qu'il crée un compte
+     * @param actionEvent -
+     */
     public void userCreateAccount(ActionEvent actionEvent) {
         App a = new App();
 

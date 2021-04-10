@@ -1,5 +1,6 @@
 package ch.heigvd.pro.pdfauth.impl;
 
+import ch.heigvd.pro.pdfauth.impl.api.APIConnectionHandler;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -31,7 +32,7 @@ public class App extends Application {
 
         try {
 
-            if (APIConnectionHandler.tokenExistsAndIsValid()) {
+            if (APIConnectionHandler.tokenExistsAndIsValid("src/main/resources/ch/heigvd/pro/pdfauth/impl/token")) {
                 root = FXMLLoader.load(getClass().getResource("main.fxml"));
             }
             else { // Si le token n'est pas/plus valide, chargement de la fenêtre de login

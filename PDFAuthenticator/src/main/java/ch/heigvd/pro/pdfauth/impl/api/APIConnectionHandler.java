@@ -1,4 +1,4 @@
-package ch.heigvd.pro.pdfauth.impl;
+package ch.heigvd.pro.pdfauth.impl.api;
 
 import org.json.JSONObject;
 
@@ -91,12 +91,12 @@ public class APIConnectionHandler {
      * @return true s'il existe et qu'il est valide, false sinon
      * @throws IOException
      */
-    public static boolean tokenExistsAndIsValid() throws IOException {
+    public static boolean tokenExistsAndIsValid(String path) throws IOException {
 
         // A voir dans quel dossier il faudra le créé lors de la release
-        File tokenFile = new File("src/main/resources/ch/heigvd/pro/pdfauth/impl/token");
+        File tokenFile = new File(path);
 
-        if (tokenFile.exists()) {
+        if (tokenFile.exists() && tokenFile.length() != 0) {
 
             String jsonInputString;
             HttpURLConnection conn = getConnection();
@@ -114,11 +114,24 @@ public class APIConnectionHandler {
             JSONObject obj = new JSONObject(response);
             int HttpCode = obj.getJSONObject("status").getInt("code");
 
+            // Remplacement du token existant par le nouveau, reçu par l'API
+            // ce qui implique que l'utilisateur devra utiliser ses identifiants pour se connecter
+            // seulement s'il n'utilise pas le programme pendant une durée supérieure à celle de la validité du token
+            String newToken = obj.getJSONObject("data").getString("token");
+            createToken(newToken, path);
+
             // Si le token n'est pas/plus valide
             return HttpCode != 401;
 
         } else { // Le token n'existe pas
             return false;
         }
+    }
+
+    public static void createToken(String token, String path) throws IOException {
+
+        PrintWriter printWriter = new PrintWriter(new FileWriter(path));
+        printWriter.print(token);
+        printWriter.close();
     }
 }
