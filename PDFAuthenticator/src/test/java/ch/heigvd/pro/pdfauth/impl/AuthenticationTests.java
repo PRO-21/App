@@ -72,7 +72,7 @@ public class AuthenticationTests {
     }
 
     @AfterAll
-    static void DeleteTokenFile() {
+    public static void DeleteTokenFile() {
         tokenFile.delete();
         Assertions.assertTrue(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/test_folder").delete());
     }
