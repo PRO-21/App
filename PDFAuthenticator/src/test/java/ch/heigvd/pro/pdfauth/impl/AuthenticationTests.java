@@ -14,6 +14,14 @@ public class AuthenticationTests {
     static String token = "";
     static File tokenFile = null;
 
+    @BeforeAll
+    public static void createTestsStructure() {
+
+        File directory = new File("src/test/java/ch/heigvd/pro/pdfauth/impl/test_folder");
+        directory.mkdirs();
+        Assertions.assertTrue(directory.exists());
+    }
+
     @Test
     @Order(1)
     public void AppShouldGetConnectionFromAPI() throws IOException {
@@ -51,7 +59,7 @@ public class AuthenticationTests {
     @Order(3)
     public void AppShouldCreateTokenFile() throws IOException {
 
-        tokenFile = new File("src/test/resources/token");
+        tokenFile = new File("src/test/java/ch/heigvd/pro/pdfauth/impl/test_folder/token");
         APIConnectionHandler.createToken(token, tokenFile.getPath());
         Assertions.assertTrue(tokenFile.exists());
         Assertions.assertTrue(tokenFile.length() != 0);
@@ -60,11 +68,12 @@ public class AuthenticationTests {
     @Test
     @Order(4)
     public void AppShouldGetTrueIfTokenIsValid() throws IOException {
-        Assertions.assertTrue(APIConnectionHandler.tokenExistsAndIsValid("src/test/resources/token"));
+        Assertions.assertTrue(APIConnectionHandler.tokenExistsAndIsValid("src/test/java/ch/heigvd/pro/pdfauth/impl/test_folder/token"));
     }
 
     @AfterAll
     static void DeleteTokenFile() {
-        Assertions.assertTrue(tokenFile.delete());
+        tokenFile.delete();
+        Assertions.assertTrue(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/test_folder").delete());
     }
 }
