@@ -14,7 +14,7 @@ import java.io.IOException;
 // Classe principale permettant de lancer l'application
 public class App extends Application {
 
-    private static Stage stg;
+    public static Stage stg;
 
     public static void main(String[] args) {
         launch();
