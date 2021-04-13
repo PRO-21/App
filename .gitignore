@@ -26,3 +26,5 @@ hs_err_pid*
 PDFAuthenticator/.idea
 PDFAuthenticator/target
 PDFAuthenticator/PDFAuthenticator.iml
+PDFAuthenticator/src/test/resources/token
+PDFAuthenticator/src/main/resources/ch/heigvd/pro/pdfauth/impl/token
