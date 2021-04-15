@@ -8,4 +8,6 @@ module ch.heigvd.pro.pdfauth.impl {
     exports ch.heigvd.pro.pdfauth.impl;
     opens ch.heigvd.pro.pdfauth.impl.controllers to javafx.fxml;
     exports ch.heigvd.pro.pdfauth.impl.controllers;
+    opens ch.heigvd.pro.pdfauth.impl.pdf to javafx.fxml;
+    exports ch.heigvd.pro.pdfauth.impl.pdf;
 }

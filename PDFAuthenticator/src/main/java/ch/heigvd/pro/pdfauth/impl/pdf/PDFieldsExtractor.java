@@ -12,16 +12,18 @@ import java.util.List;
 
 public class PDFieldsExtractor {
 
-    public static List<String> extractFields(File pdf) throws IOException {
+    public static List<Field> extractFields(File pdf) throws IOException {
 
         PDDocument pdDoc = PDDocument.load(pdf);
         PDDocumentCatalog pdCatalog = pdDoc.getDocumentCatalog();
         PDAcroForm pdAcroForm = pdCatalog.getAcroForm();
-        List<String> fields = new ArrayList<>();
+        List<Field> fields = new ArrayList<>();
 
         for (PDField field : pdAcroForm.getFields()) {
-            fields.add(field.getPartialName() + " : " + field.getValueAsString());
+            fields.add(new Field(field.getPartialName(), field.getValueAsString()));
         }
+
+        pdDoc.close();
 
         return fields;
     }

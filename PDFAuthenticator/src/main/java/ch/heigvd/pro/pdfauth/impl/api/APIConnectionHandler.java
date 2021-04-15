@@ -19,10 +19,10 @@ public class APIConnectionHandler {
 
         // Désactivation de vérifications SSL car exceptions sinon
         // source : https://stackoverflow.com/questions/19540289/how-to-fix-the-java-security-cert-certificateexception-no-subject-alternative
-        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+        /*javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
                 (hostname, sslSession) -> {
                     return hostname.equals("pro.simeunovic.ch"); // ou return true
-                });
+                });*/
 
         // Connexion uniquement sur la partie authentification de l'API pour l'instant
         // Modification possible dans le futur pour l'envoi des données à protéger
