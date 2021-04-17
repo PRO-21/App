@@ -25,4 +25,4 @@ jobs:
       run: mvn clean install -DskipTests=true
     - name: Run the tests
       working-directory: ./PDFAuthenticator
-      run: mvn -Dtest=AuthenticationTests,FieldsExtractionTests test
+      run: mvn -Dtest=AuthenticationTests test
