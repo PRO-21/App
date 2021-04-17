@@ -12,6 +12,7 @@ import java.util.List;
 // Classe permettant de tester l'extraction des champs d'un formulaire PDF.
 // Comme les objet Field utilisent des CheckBox, il a fallu ajouter une dépendence Maven (TestFX) pour permettre de
 // tester des objets de JavaFX et lier cette classe de test à la classe ApplicationTest de TestFX.
+// Les tests passent en local avec l'IDE et Maven mais pas avec les GitHub Actions
 public class FieldsExtractionTests extends ApplicationTest {
 
     @Test
