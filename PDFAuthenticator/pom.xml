@@ -79,6 +79,7 @@
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <!-- Pour pouvoir utiliser des objets JavaFX dans les tests -->
                     <argLine>--add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED</argLine>
+                    <argLine>--add-exports javafx.graphics/com.sun.glass.ui=ALL-UNNAMED</argLine>
                 </configuration>
                 <version>2.22.1</version>
             </plugin>
