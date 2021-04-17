@@ -23,7 +23,7 @@
    <children>
       <Label text="Rechercher un PDF à protéger : " />
       <Button mnemonicParsing="false" onAction="#openPDF" text="Ouvrir..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <TextField fx:id="filePath" GridPane.rowIndex="1" />
+      <TextField fx:id="filePath" editable="false" GridPane.rowIndex="1" />
       <Label text="Champs détectés :" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets top="40.0" />

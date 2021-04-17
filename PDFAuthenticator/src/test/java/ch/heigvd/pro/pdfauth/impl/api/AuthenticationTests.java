@@ -1,13 +1,15 @@
-package ch.heigvd.pro.pdfauth.impl;
+package ch.heigvd.pro.pdfauth.impl.api;
+
+import org.json.JSONObject;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-import ch.heigvd.pro.pdfauth.impl.api.APIConnectionHandler;
-import org.json.JSONObject;
-import org.junit.jupiter.api.*;
-
+// Classe permettant de tester la communication avec l'API concernant l'authentification de l'utilisateur.
+// Les tests sont exécutés dans l'ordre (avec @Order) car ensemble, ils représentent la séquence utilisée dans le code
+// pour obtenir ou renouveler un token
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AuthenticationTests {
 
@@ -17,7 +19,7 @@ public class AuthenticationTests {
     @BeforeAll
     public static void createTestsStructure() {
 
-        File directory = new File("src/test/java/ch/heigvd/pro/pdfauth/impl/test_folder");
+        File directory = new File("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder");
         directory.mkdirs();
         Assertions.assertTrue(directory.exists());
     }
@@ -59,7 +61,7 @@ public class AuthenticationTests {
     @Order(3)
     public void AppShouldCreateTokenFile() throws IOException {
 
-        tokenFile = new File("src/test/java/ch/heigvd/pro/pdfauth/impl/test_folder/token");
+        tokenFile = new File("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder/token");
         APIConnectionHandler.createToken(token, tokenFile.getPath());
         Assertions.assertTrue(tokenFile.exists());
         Assertions.assertTrue(tokenFile.length() != 0);
@@ -68,12 +70,12 @@ public class AuthenticationTests {
     @Test
     @Order(4)
     public void AppShouldGetTrueIfTokenIsValid() throws IOException {
-        Assertions.assertTrue(APIConnectionHandler.tokenExistsAndIsValid("src/test/java/ch/heigvd/pro/pdfauth/impl/test_folder/token"));
+        Assertions.assertTrue(APIConnectionHandler.tokenExistsAndIsValid("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder/token"));
     }
 
     @AfterAll
     public static void DeleteTokenFile() {
         tokenFile.delete();
-        Assertions.assertTrue(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/test_folder").delete());
+        Assertions.assertTrue(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder").delete());
     }
 }
