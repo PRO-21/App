@@ -14,7 +14,6 @@ public class APIConnectionHandler {
      * Fonction permettant de se connecter à l'API
      * @param resource type de ressource à demander à l'API
      * @return connexion URL à l'API en HTTP
-     * @throws IOException
      * @throws IllegalArgumentException si l'accès à la ressource demandée n'est pas autorisé
      */
     public static HttpURLConnection getConnection(String resource) throws IOException {
@@ -46,11 +45,10 @@ public class APIConnectionHandler {
      * Fonction permettant d'envoyer des données à l'API sous forme de chaîne JSON
      * @param conn              connexion à l'API
      * @param jsonInputString   données à envoyer
-     * @throws IOException
      */
     public static void sendToAPI(HttpURLConnection conn, String jsonInputString) throws IOException {
 
-        // Envoi de la demande de token à l'API
+        // Envoi des données à l'API
         try (BufferedOutputStream bos = new BufferedOutputStream(conn.getOutputStream())) {
             byte[] input = jsonInputString.getBytes();
             bos.write(input, 0, input.length);
@@ -86,7 +84,7 @@ public class APIConnectionHandler {
                     response.append(responseLine.trim());
                 }
             } catch (IOException e) { // Dans le cas où il y a un problème lors de la lecture du stream d'erreur
-                System.out.println("Error with reading error stream");
+                System.out.println("Error when reading error stream");
             }
         }
         return response.toString();
@@ -95,11 +93,10 @@ public class APIConnectionHandler {
     /**
      * Fonction permettant de déterminer si le token existant existe et est toujours valide
      * @return true s'il existe et qu'il est valide, false sinon
-     * @throws IOException
      */
     public static boolean tokenExistsAndIsValid(String path) throws IOException {
 
-        // A voir dans quel dossier il faudra le créé lors de la release
+        // TODO : A voir dans quel dossier il faudra le créé lors de la release
         File tokenFile = new File(path);
 
         if (tokenFile.exists() && tokenFile.length() != 0) {
@@ -122,22 +119,28 @@ public class APIConnectionHandler {
             JSONObject obj = new JSONObject(response);
             int HttpCode = obj.getJSONObject("status").getInt("code");
 
-            // Remplacement du token existant par le nouveau, reçu par l'API
+            // Remplacement du token existant par le nouveau, reçu par l'API (si le token existant est encore valide)
             // ce qui implique que l'utilisateur devra utiliser ses identifiants pour se connecter
             // seulement s'il n'utilise pas le programme pendant une durée supérieure à celle de la validité du token
-            String newToken = obj.getJSONObject("data").getString("token");
-            createToken(newToken, path);
+            if (HttpCode == HttpURLConnection.HTTP_OK) {
+                String newToken = obj.getJSONObject("data").getString("token");
+                createToken(newToken, path);
+            }
 
             // Si le token n'est pas/plus valide
-            return HttpCode != 401;
+            return HttpCode != HttpURLConnection.HTTP_UNAUTHORIZED;
 
         } else { // Le token n'existe pas
             return false;
         }
     }
 
+    /**
+     * Fonction permettant de créer le fichier contenant le token
+     * @param token token à mettre dans le fichier
+     * @param path  chemin du fichier à créer
+     */
     public static void createToken(String token, String path) throws IOException {
-
         PrintWriter printWriter = new PrintWriter(new FileWriter(path));
         printWriter.print(token);
         printWriter.close();

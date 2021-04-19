@@ -37,7 +37,6 @@ public class LoginController {
 
     /**
      * Fonction permettant de vérifier les identifiants de l'utilisateur en communiquant avec l'API
-     * @throws IOException
      */
     private void checkLogin() throws IOException {
 
@@ -58,7 +57,7 @@ public class LoginController {
         int HttpCode = obj.getJSONObject("status").getInt("code");
 
         // Si la requête est valide
-        if (HttpCode == 200) {
+        if (HttpCode == HttpURLConnection.HTTP_OK) {
 
             String token = obj.getJSONObject("data").getString("token");
             APIConnectionHandler.createToken(token, "src/main/resources/ch/heigvd/pro/pdfauth/impl/token");

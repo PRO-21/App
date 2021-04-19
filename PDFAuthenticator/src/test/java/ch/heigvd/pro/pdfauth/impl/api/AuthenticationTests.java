@@ -51,7 +51,7 @@ public class AuthenticationTests {
         int HttpCode = obj.getJSONObject("status").getInt("code");
 
         // Si le code est 200 alors la requête est valide
-        Assertions.assertEquals(200, HttpCode);
+        Assertions.assertEquals(HttpURLConnection.HTTP_OK, HttpCode);
 
         token = obj.getJSONObject("data").getString("token");
 

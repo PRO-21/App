@@ -2,6 +2,8 @@ package ch.heigvd.pro.pdfauth.impl.pdf;
 
 import javafx.scene.control.CheckBox;
 
+import java.util.Objects;
+
 // Classe représentant un champ extrait du PDF à protéger
 public class Field {
 
@@ -9,7 +11,16 @@ public class Field {
     final private String value;     // Valeur du champ
     private CheckBox isProtected;   // S'il est à protéger ou pas
 
+    /**
+     * Constructeur permettant d'instancier un objet Field
+     * @param fieldName nom du champ
+     * @param value     valeur du champ
+     */
     public Field(String fieldName, String value) {
+
+        Objects.requireNonNull(fieldName);
+        Objects.requireNonNull(value);
+
         this.fieldName = fieldName;
         this.value = value;
         isProtected = new CheckBox();
@@ -44,6 +55,8 @@ public class Field {
      * @param isProtected CheckBox à définir pour le champ
      */
     public void setIsProtected(CheckBox isProtected) {
+
+        Objects.requireNonNull(isProtected);
         this.isProtected = isProtected;
     }
 

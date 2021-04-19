@@ -17,7 +17,6 @@ public class PDFieldsExtractor {
      * Fonction permettant d'extraire les champs d'un formulaire PDF
      * @param pdf fichier PDF dont il faut extraire les champs
      * @return liste de tous les Fields trouvés dans le formulaire
-     * @throws IOException
      */
     public static List<Field> extractFields(File pdf) throws IOException {
 
