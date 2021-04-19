@@ -14,7 +14,6 @@ public class APIConnectionHandler {
      * Fonction permettant de se connecter à l'API
      * @param resource type de ressource à demander à l'API
      * @return connexion URL à l'API en HTTP
-     * @throws IllegalArgumentException si l'accès à la ressource demandée n'est pas autorisé
      */
     public static HttpURLConnection getConnection(String resource) throws IOException {
 
@@ -24,12 +23,6 @@ public class APIConnectionHandler {
                 (hostname, sslSession) -> {
                     return hostname.equals("pro.simeunovic.ch"); // ou return true
                 });*/
-
-        // Afin d'ajouter une protection supplémentaire, la connexion à l'API n'est effectuée qui si la ressource
-        // demandée concerne soit l'authentification soit la création d'un certificat car l'app Java n'est pas censée
-        // utiliser les autres ressources proposées par l'API
-        if (!resource.equals("auth") && !resource.equals("cert"))
-            throw new IllegalArgumentException("Accès à la ressource demandée non-autorisé");
 
         URL url = new URL("https://pro.simeunovic.ch:8022/protest/api/" + resource);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
