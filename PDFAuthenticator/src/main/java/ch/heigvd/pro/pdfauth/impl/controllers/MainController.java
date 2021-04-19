@@ -12,11 +12,14 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 // Classe permettant de récupérer les valeurs des champs selon les events qui se passe sur la fenêtre principale
 public class MainController {
 
+    @FXML
+    private Label protectedBy;
     @FXML
     private TableView<Field> fieldsList;
     @FXML
@@ -115,6 +118,20 @@ public class MainController {
      */
     public void sendData(ActionEvent actionEvent) {
 
-        System.out.println(fields);
+        List<Field> fieldsToProtect = keepOnlyFieldsToProtect();
+        System.out.println(fieldsToProtect);
+    }
+
+    public List<Field> keepOnlyFieldsToProtect() {
+
+        List<Field> fieldsToProtect = new ArrayList<>();
+
+        for (Field field : fields) {
+
+            if (field.getIsProtected().isSelected())
+                fieldsToProtect.add(field);
+        }
+
+        return fieldsToProtect;
     }
 }

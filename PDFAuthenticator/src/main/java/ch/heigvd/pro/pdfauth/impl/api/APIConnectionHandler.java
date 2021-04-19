@@ -12,10 +12,12 @@ public class APIConnectionHandler {
 
     /**
      * Fonction permettant de se connecter à l'API
+     * @param resource type de ressource à demander à l'API
      * @return connexion URL à l'API en HTTP
      * @throws IOException
+     * @throws IllegalArgumentException si l'accès à la ressource demandée n'est pas autorisé
      */
-    public static HttpURLConnection getConnection() throws IOException {
+    public static HttpURLConnection getConnection(String resource) throws IOException {
 
         // Désactivation de vérifications SSL car exceptions sinon
         // source : https://stackoverflow.com/questions/19540289/how-to-fix-the-java-security-cert-certificateexception-no-subject-alternative
@@ -24,9 +26,13 @@ public class APIConnectionHandler {
                     return hostname.equals("pro.simeunovic.ch"); // ou return true
                 });*/
 
-        // Connexion uniquement sur la partie authentification de l'API pour l'instant
-        // Modification possible dans le futur pour l'envoi des données à protéger
-        URL url = new URL("https://pro.simeunovic.ch:8022/protest/api/auth");
+        // Afin d'ajouter une protection supplémentaire, la connexion à l'API n'est effectuée qui si la ressource
+        // demandée concerne soit l'authentification soit la création d'un certificat car l'app Java n'est pas censée
+        // utiliser les autres ressources proposées par l'API
+        if (!resource.equals("auth") && !resource.equals("cert"))
+            throw new IllegalArgumentException("Accès à la ressource demandée non-autorisé");
+
+        URL url = new URL("https://pro.simeunovic.ch:8022/protest/api/" + resource);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json");
@@ -98,18 +104,20 @@ public class APIConnectionHandler {
 
         if (tokenFile.exists() && tokenFile.length() != 0) {
 
-            String jsonInputString;
-            HttpURLConnection conn = getConnection();
+            JSONObject jsonInput = new JSONObject();
+            HttpURLConnection conn = getConnection("auth");
 
             // Récupération du token existant pour demander à l'API s'il est toujours valide
             String token = Files.readAllLines(tokenFile.toPath()).get(0);
 
             conn.setRequestProperty("Authorization", "Bearer " + token);
-            jsonInputString = "{\"auth_type\": \"token\"}";
+            jsonInput.put("auth_type", "token");
 
-            APIConnectionHandler.sendToAPI(conn, jsonInputString);
+            APIConnectionHandler.sendToAPI(conn, jsonInput.toString());
 
             String response = APIConnectionHandler.recvFromAPI(conn);
+
+            conn.disconnect();
 
             JSONObject obj = new JSONObject(response);
             int HttpCode = obj.getJSONObject("status").getInt("code");

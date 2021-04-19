@@ -26,24 +26,25 @@ public class AuthenticationTests {
 
     @Test
     @Order(1)
-    public void AppShouldGetConnectionFromAPI() throws IOException {
+    public void appShouldGetConnectionFromAPI() throws IOException {
 
-        HttpURLConnection conn = APIConnectionHandler.getConnection();
+        HttpURLConnection conn = APIConnectionHandler.getConnection("auth");
         Assertions.assertNotNull(conn);
     }
 
     @Test
     @Order(2)
-    public void AppShouldReceiveToken() throws IOException {
+    public void appShouldReceiveToken() throws IOException {
 
-        HttpURLConnection conn = APIConnectionHandler.getConnection();
+        HttpURLConnection conn = APIConnectionHandler.getConnection("auth");
 
         // Envoi de la demande de token à l'API
-        String jsonInputString = "{\"auth_type\": \"credentials\"," +
-                "\"email\": \"albert.dupontel@gmail.com\"," +
-                "\"password\": \"pass\"}";
+        JSONObject jsonInput = new JSONObject();
+        jsonInput.put("auth_type", "credentials");
+        jsonInput.put("email", "albert.dupontel@gmail.com");
+        jsonInput.put("password", "pass");
 
-        APIConnectionHandler.sendToAPI(conn, jsonInputString);
+        APIConnectionHandler.sendToAPI(conn, jsonInput.toString());
         String response = APIConnectionHandler.recvFromAPI(conn);
 
         JSONObject obj = new JSONObject(response);
@@ -59,7 +60,7 @@ public class AuthenticationTests {
 
     @Test
     @Order(3)
-    public void AppShouldCreateTokenFile() throws IOException {
+    public void appShouldCreateTokenFile() throws IOException {
 
         tokenFile = new File("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder/token");
         APIConnectionHandler.createToken(token, tokenFile.getPath());
@@ -69,12 +70,12 @@ public class AuthenticationTests {
 
     @Test
     @Order(4)
-    public void AppShouldGetTrueIfTokenIsValid() throws IOException {
+    public void appShouldGetTrueIfTokenIsValid() throws IOException {
         Assertions.assertTrue(APIConnectionHandler.tokenExistsAndIsValid("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder/token"));
     }
 
     @AfterAll
-    public static void DeleteTokenFile() {
+    public static void deleteTokenFile() {
         tokenFile.delete();
         Assertions.assertTrue(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder").delete());
     }

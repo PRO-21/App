@@ -16,26 +16,26 @@ import java.util.List;
 public class FieldsExtractionTests extends ApplicationTest {
 
     @Test
-    public void ExtractorShouldExtractAllFields() throws IOException {
+    public void extractorShouldExtractAllFields() throws IOException {
         List<Field> fields = PDFieldsExtractor.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test.pdf"));
         Assertions.assertEquals(17, fields.size());
     }
 
     @Test
-    public void FieldsListShouldBeEmptyIfPDFFormNotExists() throws IOException {
+    public void fieldsListShouldBeEmptyIfPDFFormNotExists() throws IOException {
         List<Field> fields = PDFieldsExtractor.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_without_form.pdf"));
         Assertions.assertTrue(fields.isEmpty());
     }
 
     @Test
-    public void ExtractorShouldThrowExceptionIfNotPDF() {
+    public void extractorShouldThrowExceptionIfNotPDF() {
         Assertions.assertThrows(IOException.class, () -> {
             PDFieldsExtractor.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_word.docx"));
         });
     }
 
     @Test
-    public void ExtractorShouldExtractFieldsCorrectly() throws IOException {
+    public void extractorShouldExtractFieldsCorrectly() throws IOException {
         List<Field> fields = PDFieldsExtractor.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test.pdf"));
         Assertions.assertEquals("Albert",         fields.get(0).getValue());
         Assertions.assertEquals("Dupontel",       fields.get(1).getValue());

@@ -27,7 +27,7 @@ public class LoginController {
         try {
             checkLogin();
         }
-        catch (IOException ex) {
+        catch (Exception ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
             alert.setContentText(ex.getMessage());
@@ -36,21 +36,23 @@ public class LoginController {
     }
 
     /**
-     * Fonction permettant de vérifier les identifiants de l'utilisateur en communicant avec l'API
+     * Fonction permettant de vérifier les identifiants de l'utilisateur en communiquant avec l'API
      * @throws IOException
      */
     private void checkLogin() throws IOException {
 
         App a = new App();
 
-        HttpURLConnection conn = APIConnectionHandler.getConnection();
+        HttpURLConnection conn = APIConnectionHandler.getConnection("auth");
 
-        String jsonInputString = "{\"auth_type\": \"credentials\"," +
-                                  "\"email\": \"" + email.getText() + "\"," +
-                                  "\"password\": \"" + password.getText() + "\"}";
+        JSONObject jsonInput = new JSONObject();
+        jsonInput.put("auth_type", "credentials");
+        jsonInput.put("email", email.getText());
+        jsonInput.put("password", password.getText());
 
-        APIConnectionHandler.sendToAPI(conn, jsonInputString);
+        APIConnectionHandler.sendToAPI(conn, jsonInput.toString());
         String response = APIConnectionHandler.recvFromAPI(conn);
+        conn.disconnect();
 
         JSONObject obj = new JSONObject(response);
         int HttpCode = obj.getJSONObject("status").getInt("code");
