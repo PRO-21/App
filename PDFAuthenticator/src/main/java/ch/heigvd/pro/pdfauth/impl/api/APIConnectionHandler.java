@@ -6,6 +6,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.Base64;
 
 // Classe permettant de gérer la communication avec l'API
 public class APIConnectionHandler {
@@ -90,15 +91,13 @@ public class APIConnectionHandler {
     public static boolean tokenExistsAndIsValid(String path) throws IOException {
 
         // TODO : A voir dans quel dossier il faudra le créé lors de la release
-        File tokenFile = new File(path);
 
-        if (tokenFile.exists() && tokenFile.length() != 0) {
+        // Récupération du token existant pour demander à l'API s'il est toujours valide
+        String token = getToken(path);
 
+        if (token != null) {
             JSONObject jsonInput = new JSONObject();
             HttpURLConnection conn = getConnection("auth");
-
-            // Récupération du token existant pour demander à l'API s'il est toujours valide
-            String token = Files.readAllLines(tokenFile.toPath()).get(0);
 
             conn.setRequestProperty("Authorization", "Bearer " + token);
             jsonInput.put("auth_type", "token");
@@ -137,5 +136,37 @@ public class APIConnectionHandler {
         PrintWriter printWriter = new PrintWriter(new FileWriter(path));
         printWriter.print(token);
         printWriter.close();
+    }
+
+    /**
+     * Fonction permettant d'extraire le nom d'utilisateur stocké dans le token
+     * @param path chemin du fichier contenant le token
+     * @return le nom d'utilisateur
+     */
+    public static String extractUsernameFromToken(String path) throws IOException {
+
+        // Instanciation du décodeur pour récupérer les infos du token JWT
+        Base64.Decoder decoder = Base64.getDecoder();
+
+        // Extraction du nom d'utilisateur
+        String payload = new String(decoder.decode(getToken(path).split("\\.")[1]));
+        return new JSONObject(payload).getString("fullname");
+    }
+
+    /**
+     * Fonction permettant de récupérer le token dans le fichier
+     * @param path chemin du fichier contenant le token
+     * @return le token
+     */
+    public static String getToken(String path) throws IOException {
+
+        File tokenFile = new File(path);
+
+        if (tokenFile.exists() && tokenFile.length() != 0) {
+            return Files.readAllLines(tokenFile.toPath()).get(0);
+        }
+        else {
+            return null;
+        }
     }
 }

@@ -1,22 +1,31 @@
 package ch.heigvd.pro.pdfauth.impl.controllers;
 
+import ch.heigvd.pro.pdfauth.impl.api.APIConnectionHandler;
 import ch.heigvd.pro.pdfauth.impl.pdf.Field;
 import ch.heigvd.pro.pdfauth.impl.pdf.PDFieldsExtractor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 // Classe permettant de récupérer les valeurs des champs selon les events qui se passe sur la fenêtre principale
-public class MainController {
+public class MainController implements Initializable {
 
     @FXML
     private Label protectedBy;
@@ -26,6 +35,24 @@ public class MainController {
     private TextField filePath;
 
     private List<Field> fields;
+
+    /**
+     * Fonction permettant de modifier directement des éléments au chargement de la fenêtre
+     * @param url -
+     * @param resourceBundle -
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        try {
+            protectedBy.setText(APIConnectionHandler.extractUsernameFromToken("src/main/resources/ch/heigvd/pro/pdfauth/impl/token"));
+        } catch (IOException ex) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+        }
+    }
 
     /**
      * Fonction appelée lors de l'appui sur le bouton "Ouvrir" sur la fenêtre. Elle s'occupe d'ouvrir l'explorateur de
@@ -118,20 +145,43 @@ public class MainController {
      */
     public void sendData(ActionEvent actionEvent) {
 
-        List<Field> fieldsToProtect = keepOnlyFieldsToProtect();
-        System.out.println(fieldsToProtect);
+        String jsonInputString = prepareFieldsToSend();
+
+        try {
+            HttpURLConnection conn = APIConnectionHandler.getConnection("cert");
+            conn.setRequestProperty("Authorization", "Bearer " + APIConnectionHandler.getToken("src/main/resources/ch/heigvd/pro/pdfauth/impl/token"));
+            APIConnectionHandler.sendToAPI(conn, jsonInputString);
+            String response = APIConnectionHandler.recvFromAPI(conn);
+
+            JSONObject obj = new JSONObject(response);
+            String certificateID = obj.getJSONObject("data").getString("idCertificat");
+            System.out.println("URL : https://pro.simeunovic.ch:8022/protest/view/scan.php/?id=" + certificateID);
+        }
+        catch (IOException ex) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setContentText(ex.getMessage());
+            alert.showAndWait();
+        }
     }
 
-    public List<Field> keepOnlyFieldsToProtect() {
+    /**
+     * Fonction permettant de ne garder que les champs qui doivent être protégés et préparer la string Json à envoyer
+     * à l'API
+     * @return string à envoyer à l'API
+     */
+    private String prepareFieldsToSend() {
 
-        List<Field> fieldsToProtect = new ArrayList<>();
+        JSONObject obj = new JSONObject();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        obj.put("dateSignature", dateFormat.format(new Date()));
 
         for (Field field : fields) {
 
             if (field.getIsProtected().isSelected())
-                fieldsToProtect.add(field);
+                // Comme les JSONObject sont des unordered sets, il ne conserve pas l'ordre des champs
+                obj.put(field.getFieldName(), field.getValue());
         }
-
-        return fieldsToProtect;
+        return obj.toString();
     }
 }

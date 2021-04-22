@@ -27,7 +27,7 @@ public class LoginController {
         try {
             checkLogin();
         }
-        catch (Exception ex) {
+        catch (IOException ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
             alert.setContentText(ex.getMessage());
@@ -83,8 +83,6 @@ public class LoginController {
      */
     public void userCreateAccount(ActionEvent actionEvent) {
         App a = new App();
-
-        // TODO : Rediriger sur la page de création de compte du site web
-        a.getHostServices().showDocument("https://www.google.ch");
+        a.getHostServices().showDocument("https://pro.simeunovic.ch:8022/protest/view/signup.php");
     }
 }
