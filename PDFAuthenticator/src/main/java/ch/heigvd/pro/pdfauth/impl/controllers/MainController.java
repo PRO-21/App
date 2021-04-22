@@ -145,22 +145,45 @@ public class MainController implements Initializable {
      */
     public void sendData(ActionEvent actionEvent) {
 
-        String jsonInputString = prepareFieldsToSend();
+        if (fields != null) {
 
-        try {
-            HttpURLConnection conn = APIConnectionHandler.getConnection("cert");
-            conn.setRequestProperty("Authorization", "Bearer " + APIConnectionHandler.getToken("src/main/resources/ch/heigvd/pro/pdfauth/impl/token"));
-            APIConnectionHandler.sendToAPI(conn, jsonInputString);
-            String response = APIConnectionHandler.recvFromAPI(conn);
+            String jsonInputString = prepareFieldsToSend();
 
-            JSONObject obj = new JSONObject(response);
-            String certificateID = obj.getJSONObject("data").getString("idCertificat");
-            System.out.println("URL : https://pro.simeunovic.ch:8022/protest/view/scan.php/?id=" + certificateID);
+            try {
+                HttpURLConnection conn = APIConnectionHandler.getConnection("cert");
+                conn.setRequestProperty("Authorization", "Bearer " + APIConnectionHandler.getToken("src/main/resources/ch/heigvd/pro/pdfauth/impl/token"));
+                APIConnectionHandler.sendToAPI(conn, jsonInputString);
+                String response = APIConnectionHandler.recvFromAPI(conn);
+
+                JSONObject obj = new JSONObject(response);
+
+                int HttpCode = obj.getJSONObject("status").getInt("code");
+
+                if (HttpCode == HttpURLConnection.HTTP_OK) {
+                    String certificateID = obj.getJSONObject("data").getString("idCertificat");
+                    System.out.println("URL : https://pro.simeunovic.ch:8022/protest/view/scan.php/?id=" + certificateID);
+                }
+                else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Erreur");
+                    alert.setHeaderText("Aucun champ à protéger sélectionné");
+                    String cause = obj.getJSONObject("status").getString("message");
+                    alert.setContentText(cause);
+                    alert.showAndWait();
+                }
+
+            }
+            catch (IOException ex) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erreur");
+                alert.setContentText(ex.getMessage());
+                alert.showAndWait();
+            }
         }
-        catch (IOException ex) {
+        else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
-            alert.setContentText(ex.getMessage());
+            alert.setContentText("Veuillez d'abord renseigner un fichier PDF");
             alert.showAndWait();
         }
     }
