@@ -36,27 +36,28 @@ public class LoginController {
     }
 
     /**
-     * Fonction permettant de vérifier les identifiants de l'utilisateur en communicant avec l'API
-     * @throws IOException
+     * Fonction permettant de vérifier les identifiants de l'utilisateur en communiquant avec l'API
      */
     private void checkLogin() throws IOException {
 
         App a = new App();
 
-        HttpURLConnection conn = APIConnectionHandler.getConnection();
+        HttpURLConnection conn = APIConnectionHandler.getConnection("auth");
 
-        String jsonInputString = "{\"auth_type\": \"credentials\"," +
-                                  "\"email\": \"" + email.getText() + "\"," +
-                                  "\"password\": \"" + password.getText() + "\"}";
+        JSONObject jsonInput = new JSONObject();
+        jsonInput.put("auth_type", "credentials");
+        jsonInput.put("email", email.getText());
+        jsonInput.put("password", password.getText());
 
-        APIConnectionHandler.sendToAPI(conn, jsonInputString);
+        APIConnectionHandler.sendToAPI(conn, jsonInput.toString());
         String response = APIConnectionHandler.recvFromAPI(conn);
+        conn.disconnect();
 
         JSONObject obj = new JSONObject(response);
         int HttpCode = obj.getJSONObject("status").getInt("code");
 
         // Si la requête est valide
-        if (HttpCode == 200) {
+        if (HttpCode == HttpURLConnection.HTTP_OK) {
 
             String token = obj.getJSONObject("data").getString("token");
             APIConnectionHandler.createToken(token, "src/main/resources/ch/heigvd/pro/pdfauth/impl/token");
@@ -82,8 +83,6 @@ public class LoginController {
      */
     public void userCreateAccount(ActionEvent actionEvent) {
         App a = new App();
-
-        // TODO : Rediriger sur la page de création de compte du site web
-        a.getHostServices().showDocument("https://www.google.ch");
+        a.getHostServices().showDocument("https://pro.simeunovic.ch:8022/protest/view/signup.php");
     }
 }
