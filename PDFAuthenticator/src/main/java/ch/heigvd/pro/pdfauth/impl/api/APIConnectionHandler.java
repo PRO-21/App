@@ -18,13 +18,6 @@ public class APIConnectionHandler {
      */
     public static HttpURLConnection getConnection(String resource) throws IOException {
 
-        // Désactivation de vérifications SSL car exceptions sinon
-        // source : https://stackoverflow.com/questions/19540289/how-to-fix-the-java-security-cert-certificateexception-no-subject-alternative
-        /*javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
-                (hostname, sslSession) -> {
-                    return hostname.equals("pro.simeunovic.ch"); // ou return true
-                });*/
-
         URL url = new URL("https://pro.simeunovic.ch:8022/protest/api/" + resource);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
