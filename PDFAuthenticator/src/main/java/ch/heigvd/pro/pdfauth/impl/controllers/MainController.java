@@ -2,7 +2,9 @@ package ch.heigvd.pro.pdfauth.impl.controllers;
 
 import ch.heigvd.pro.pdfauth.impl.api.APIConnectionHandler;
 import ch.heigvd.pro.pdfauth.impl.pdf.Field;
-import ch.heigvd.pro.pdfauth.impl.pdf.PDFieldsExtractor;
+import ch.heigvd.pro.pdfauth.impl.pdf.PDFHandler;
+import ch.heigvd.pro.pdfauth.impl.qrcode.QRCodeGenerator;
+import com.google.zxing.WriterException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,6 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import org.json.JSONObject;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -71,7 +74,7 @@ public class MainController implements Initializable {
 
             try {
                 // Extraction des champs
-                fields = PDFieldsExtractor.extractFields(pdf);
+                fields = PDFHandler.extractFields(pdf);
             }
             catch (IOException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -161,7 +164,14 @@ public class MainController implements Initializable {
 
                 if (HttpCode == HttpURLConnection.HTTP_OK) {
                     String certificateID = obj.getJSONObject("data").getString("idCertificat");
-                    System.out.println("URL : https://pro.simeunovic.ch:8022/protest/view/scan.php?id=" + certificateID);
+                    BufferedImage qrcode = QRCodeGenerator.generateQRCodeImage("https://pro.simeunovic.ch:8022/protest/view/scan.php?id=" + certificateID);
+
+                    // Pour tester que le QRCode est bien formé
+                    /*File output = new File("src/main/resources/ch/heigvd/pro/pdfauth/impl/qrcode.jpg");
+                    ImageIO.write(qrcode, "jpg", output);*/
+
+                    PDFHandler.insertQRCodeInPDF(new File(filePath.getText()), qrcode);
+
                 }
                 else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -173,7 +183,7 @@ public class MainController implements Initializable {
                 }
 
             }
-            catch (IOException ex) {
+            catch (IOException | WriterException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erreur");
                 alert.setContentText(ex.getMessage());
