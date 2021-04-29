@@ -9,6 +9,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
+import org.apache.pdfbox.multipdf.PageExtractor;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -47,7 +48,12 @@ public class PDFHandler {
         return fields;
     }
 
-    public static void insertQRCodeInPDF(File pdf, BufferedImage qrcode) throws IOException {
+    /**
+     * Fonction permettant d'ajouter une image sur une nouvelle page d'un document PDF
+     * @param pdf document PDF auquel ajouter l'image
+     * @param bufferedImage image à ajouter au PDF
+     */
+    public static void insertQRCodeInPDF(File pdf, BufferedImage bufferedImage) throws IOException {
 
         // Chargement du document PDF
         PDDocument doc = PDDocument.load(pdf);
@@ -57,7 +63,7 @@ public class PDFHandler {
         doc.addPage(newPage);
 
         // Conversion de la BufferedImage en PDImageXObject pour l'ajouter au PDF
-        PDImageXObject pdfImage = JPEGFactory.createFromImage(doc, qrcode);
+        PDImageXObject pdfImage = JPEGFactory.createFromImage(doc, bufferedImage);
 
         // Récupération du stream afin de pouvoir écrire "dessiner" l'image dans le PDF
         PDPageContentStream image = new PDPageContentStream(doc, newPage);
@@ -67,39 +73,36 @@ public class PDFHandler {
         image.close();
 
         // Sauvegarde du document
+        // TODO : Ajouter le QR-Code dans le même fichier, ici c'est juste pour pas péter l'original
         doc.save("src/main/resources/ch/heigvd/pro/pdfauth/impl/authenticated.pdf");
 
         // Fermeture du document
         doc.close();
     }
 
-    public static void insertQRCodeInPDF(File pdf, BufferedImage qrcode, double x, double y) throws IOException {
+    /**
+     * Fonction permettant d'ajouter une image sur un PDF
+     * @param pdf document PDF auquel ajouter l'image
+     * @param bufferedImage image à ajouter au PDF
+     * @param x coordonnée x
+     * @param y coordonnée y
+     */
+    public static void insertQRCodeInPDF(File pdf, BufferedImage bufferedImage, int x, int y) throws IOException {
 
         PDDocument doc = PDDocument.load(pdf);
 
-        PDPage page1 = new PDPage();
-        doc.addPage(page1);
+        PageExtractor pe = new PageExtractor(doc);
+        int pageNo = pe.getEndPage() - 1;
+        PDPage page = doc.getPage(pageNo);
 
-        // Retrieve the page
-        PDPage page = doc.getPage(1);
+        PDImageXObject pdfImage = JPEGFactory.createFromImage(doc, bufferedImage);
 
-        // Creating Object of PDImageXObject for selecting
-        // Image and provide the path of file in argument
-        PDImageXObject pdfImage = JPEGFactory.createFromImage(doc, qrcode);
+        PDPageContentStream image = new PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND, false);
 
-        // Creating the PDPageContentStream Object
-        // for Inserting Image
-        PDPageContentStream image = new PDPageContentStream(doc, page);
+        image.drawImage(pdfImage, x, y);
 
-        image.drawImage(pdfImage, 55, 370);
-
-        // Closing the page of PDF by closing
-        // PDPageContentStream Object
-        // && Saving the Document
         image.close();
         doc.save("src/main/resources/ch/heigvd/pro/pdfauth/impl/authenticated.pdf");
-
-        // Closing the Document
         doc.close();
     }
 }

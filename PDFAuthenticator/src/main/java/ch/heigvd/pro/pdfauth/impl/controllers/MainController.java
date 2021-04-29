@@ -31,6 +31,16 @@ import java.util.ResourceBundle;
 public class MainController implements Initializable {
 
     @FXML
+    private RadioButton topLeft;
+    @FXML
+    private RadioButton topRight;
+    @FXML
+    private RadioButton bottomLeft;
+    @FXML
+    private RadioButton bottomRight;
+    @FXML
+    private RadioButton onNewPage;
+    @FXML
     private Label protectedBy;
     @FXML
     private TableView<Field> fieldsList;
@@ -166,12 +176,38 @@ public class MainController implements Initializable {
                     String certificateID = obj.getJSONObject("data").getString("idCertificat");
                     BufferedImage qrcode = QRCodeGenerator.generateQRCodeImage("https://pro.simeunovic.ch:8022/protest/view/scan.php?id=" + certificateID);
 
-                    // Pour tester que le QRCode est bien formé
-                    /*File output = new File("src/main/resources/ch/heigvd/pro/pdfauth/impl/qrcode.jpg");
-                    ImageIO.write(qrcode, "jpg", output);*/
+                    if (onNewPage.isSelected()) {
+                        PDFHandler.insertQRCodeInPDF(new File(filePath.getText()), qrcode);
+                    }
+                    else {
 
-                    PDFHandler.insertQRCodeInPDF(new File(filePath.getText()), qrcode);
+                        int x = 0;
+                        int y = 0;
 
+                        if (topLeft.isSelected()) {
+                            x = 25;
+                            y = 700;
+                        }
+                        else if (topRight.isSelected()) {
+                            x = 400;
+                            y = 700;
+                        }
+                        else if (bottomLeft.isSelected()) {
+                            x = 25;
+                            y = 25;
+                        }
+                        else if (bottomRight.isSelected()) {
+                            x = 400;
+                            y = 25;
+                        }
+                        PDFHandler.insertQRCodeInPDF(new File(filePath.getText()), qrcode, x, y);
+                    }
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Information");
+                    alert.setHeaderText(null);
+                    alert.setContentText("QR-Code ajouté au document !");
+                    alert.showAndWait();
                 }
                 else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -181,7 +217,6 @@ public class MainController implements Initializable {
                     alert.setContentText(cause);
                     alert.showAndWait();
                 }
-
             }
             catch (IOException | WriterException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
