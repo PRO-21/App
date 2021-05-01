@@ -59,7 +59,7 @@ public class MainController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         try {
-            protectedBy.setText(APIConnectionHandler.extractUsernameFromToken("src/main/resources/ch/heigvd/pro/pdfauth/impl/token"));
+            protectedBy.setText(APIConnectionHandler.extractUsernameFromToken("token"));
         } catch (IOException ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -179,7 +179,7 @@ public class MainController implements Initializable {
 
             try {
                 HttpURLConnection conn = APIConnectionHandler.getConnection("cert");
-                conn.setRequestProperty("Authorization", "Bearer " + APIConnectionHandler.getToken("src/main/resources/ch/heigvd/pro/pdfauth/impl/token"));
+                conn.setRequestProperty("Authorization", "Bearer " + APIConnectionHandler.getToken("token"));
                 APIConnectionHandler.sendToAPI(conn, jsonInputString);
                 String response = APIConnectionHandler.recvFromAPI(conn);
 

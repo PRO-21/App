@@ -60,7 +60,7 @@ public class LoginController {
         if (HttpCode == HttpURLConnection.HTTP_OK) {
 
             String token = obj.getJSONObject("data").getString("token");
-            APIConnectionHandler.createToken(token, "src/main/resources/ch/heigvd/pro/pdfauth/impl/token");
+            APIConnectionHandler.createToken(token, "token");
 
             // Accès à la fenêtre principale
             a.changeScene("main.fxml");

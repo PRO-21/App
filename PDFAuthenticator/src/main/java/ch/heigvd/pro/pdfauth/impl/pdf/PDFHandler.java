@@ -102,7 +102,7 @@ public class PDFHandler {
         image.drawImage(pdfImage, x, y);
 
         image.close();
-        doc.save("src/main/resources/ch/heigvd/pro/pdfauth/impl/authenticated.pdf");
+        doc.save(pdf.getParent() + "/authenticated.pdf");
         doc.close();
     }
 }

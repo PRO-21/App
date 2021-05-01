@@ -19,6 +19,9 @@
 *.tar.gz
 *.rar
 
+# PDF Files
+*.pdf
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
@@ -27,4 +30,4 @@ PDFAuthenticator/.idea
 PDFAuthenticator/target
 PDFAuthenticator/PDFAuthenticator.iml
 PDFAuthenticator/src/test/resources/token
-PDFAuthenticator/src/main/resources/ch/heigvd/pro/pdfauth/impl/token
+PDFAuthenticator/token
