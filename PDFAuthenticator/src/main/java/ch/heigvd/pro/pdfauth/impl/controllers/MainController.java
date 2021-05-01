@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import org.json.JSONObject;
 
@@ -67,6 +68,19 @@ public class MainController implements Initializable {
         }
     }
 
+    public void openHelp(ActionEvent actionEvent) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Aide");
+        alert.setHeaderText("Instructions");
+        alert.setContentText("1. Ouvrir un document PDF contenant un formulaire électronique avec le bouton \"Ouvrir...\"\n\n" +
+                "2. Cocher les champs à protéger en cliquant sur les coches de la colonne \"À protéger\"\n\n" +
+                "3. Sélectionner un emplacement libre dans le document PDF sur lequel sera apposé le QR-Code ou sélectionner \"Sur une nouvelle page\"\n\n" +
+                "4. Appuyer sur le bouton \"Valider\"");
+
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        alert.showAndWait();
+    }
+
     /**
      * Fonction appelée lors de l'appui sur le bouton "Ouvrir" sur la fenêtre. Elle s'occupe d'ouvrir l'explorateur de
      * fichiers et le PDF puis d'appeler la fonction populateTableView afin d'afficher les champs extraits
@@ -81,6 +95,7 @@ public class MainController implements Initializable {
 
             // Affichage du chemin absolu du PDF dans le TextField
             filePath.setText(pdf.getPath());
+            filePath.end();
 
             try {
                 // Extraction des champs
@@ -169,35 +184,37 @@ public class MainController implements Initializable {
                 String response = APIConnectionHandler.recvFromAPI(conn);
 
                 JSONObject obj = new JSONObject(response);
-
                 int HttpCode = obj.getJSONObject("status").getInt("code");
 
+                // Si l'API renvoie un code 200
                 if (HttpCode == HttpURLConnection.HTTP_OK) {
                     String certificateID = obj.getJSONObject("data").getString("idCertificat");
                     BufferedImage qrcode = QRCodeGenerator.generateQRCodeImage("https://pro.simeunovic.ch:8022/protest/view/scan.php?id=" + certificateID);
 
+                    // Si l'utilisateur décide de mettre le QR-Code sur une nouvelle page
                     if (onNewPage.isSelected()) {
                         PDFHandler.insertQRCodeInPDF(new File(filePath.getText()), qrcode);
                     }
-                    else {
+                    else { // Sinon, il a choisi un emplacement sur la dernière page du formulaire
 
+                        // Coordonnées où sera placé le QR-Code dans le document PDF
                         int x = 0;
                         int y = 0;
 
                         if (topLeft.isSelected()) {
-                            x = 25;
-                            y = 700;
+                            x = 50;
+                            y = 750;
                         }
                         else if (topRight.isSelected()) {
-                            x = 400;
-                            y = 700;
+                            x = 500;
+                            y = 750;
                         }
                         else if (bottomLeft.isSelected()) {
-                            x = 25;
+                            x = 50;
                             y = 25;
                         }
                         else if (bottomRight.isSelected()) {
-                            x = 400;
+                            x = 500;
                             y = 25;
                         }
                         PDFHandler.insertQRCodeInPDF(new File(filePath.getText()), qrcode, x, y);
@@ -257,9 +274,11 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
 
+        // Ajout de la date de signature à l'objet Json
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         obj.put("dateSignature", dateFormat.format(new Date()));
 
+        // Ajout des champs à protéger à l'objet Json
         for (Field field : fields) {
 
             if (field.getIsProtected().isSelected())

@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Classe permettant d'extraire les champs d'un formulaire PDF
+// Classe permettant d'extraire les champs d'un formulaire PDF et d'ajouter une image au PDF
 public class PDFHandler {
 
     /**
@@ -67,14 +67,14 @@ public class PDFHandler {
 
         // Récupération du stream afin de pouvoir écrire "dessiner" l'image dans le PDF
         PDPageContentStream image = new PDPageContentStream(doc, newPage);
-        image.drawImage(pdfImage, 25, 700);
+        image.drawImage(pdfImage, 50, 750);
 
         // Fermeture du stream
         image.close();
 
         // Sauvegarde du document
         // TODO : Ajouter le QR-Code dans le même fichier, ici c'est juste pour pas péter l'original
-        doc.save("src/main/resources/ch/heigvd/pro/pdfauth/impl/authenticated.pdf");
+        doc.save(pdf.getParent() + "/authenticated.pdf");
 
         // Fermeture du document
         doc.close();
