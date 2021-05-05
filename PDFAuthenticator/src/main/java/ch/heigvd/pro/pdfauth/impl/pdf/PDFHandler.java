@@ -10,22 +10,28 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
 import org.apache.pdfbox.multipdf.PageExtractor;
+import org.apache.pdfbox.pdmodel.interactive.form.PDNonTerminalField;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 // Classe permettant d'extraire les champs d'un formulaire PDF et d'ajouter une image au PDF
 public class PDFHandler {
 
+    private static List<Field> fields;
+
     /**
-     * Fonction permettant d'extraire les champs d'un formulaire PDF
+     * Fonction permettant d'extraire les champs racine d'un formulaire PDF
      * @param pdf fichier PDF dont il faut extraire les champs
      * @return liste de tous les Fields trouvés dans le formulaire
      */
     public static List<Field> extractFields(File pdf) throws IOException {
+
+        Objects.requireNonNull(pdf);
 
         // Chargement du document PDF (et de son catalogue)
         PDDocument pdDoc = PDDocument.load(pdf);
@@ -34,18 +40,35 @@ public class PDFHandler {
         // Récupération du formulaire interactif
         PDAcroForm pdAcroForm = pdCatalog.getAcroForm();
 
-        List<Field> fields = new ArrayList<>();
+        fields = new ArrayList<>();
 
         // Si le formulaire interactif existe
         if (pdAcroForm != null) {
 
             // Extraction de tous les champs du formulaire PDF
             for (PDField field : pdAcroForm.getFields()) {
-                fields.add(new Field(field.getPartialName(), field.getValueAsString()));
+                extractAll(field);
             }
         }
         pdDoc.close();
         return fields;
+    }
+
+    /**
+     * Fonction récursive permettant d'extraire les sous-champs du formulaire PDF
+     * @param field champs possédant possiblement des sous-champs
+     */
+    private static void extractAll(PDField field) {
+
+        // Ajout des champs à la liste
+        fields.add(new Field(field.getPartialName(), field.getValueAsString()));
+
+        // Si le champ n'est pas un champ terminal
+        if (field instanceof PDNonTerminalField)  {
+            for (PDField child : ((PDNonTerminalField)field).getChildren()) {
+                extractAll(child);
+            }
+        }
     }
 
     /**
@@ -54,6 +77,9 @@ public class PDFHandler {
      * @param bufferedImage image à ajouter au PDF
      */
     public static void insertQRCodeInPDF(File pdf, BufferedImage bufferedImage) throws IOException {
+
+        Objects.requireNonNull(pdf);
+        Objects.requireNonNull(bufferedImage);
 
         // Chargement du document PDF
         PDDocument doc = PDDocument.load(pdf);
@@ -73,8 +99,8 @@ public class PDFHandler {
         image.close();
 
         // Sauvegarde du document
-        // TODO : Ajouter le QR-Code dans le même fichier, ici c'est juste pour pas péter l'original
-        doc.save(pdf.getParent() + "/authenticated.pdf");
+        String pdfName = pdf.getName().replaceFirst("[.][^.]+$", ""); // Extension retirée
+        doc.save(pdf.getParent() + "/" + pdfName + "_authenticated.pdf");
 
         // Fermeture du document
         doc.close();
@@ -89,6 +115,12 @@ public class PDFHandler {
      */
     public static void insertQRCodeInPDF(File pdf, BufferedImage bufferedImage, int x, int y) throws IOException {
 
+        Objects.requireNonNull(pdf);
+        Objects.requireNonNull(bufferedImage);
+
+        if (x < 0 || y < 0)
+            throw new IllegalArgumentException("Coords cannot be negative");
+
         PDDocument doc = PDDocument.load(pdf);
 
         PageExtractor pe = new PageExtractor(doc);
@@ -102,7 +134,10 @@ public class PDFHandler {
         image.drawImage(pdfImage, x, y);
 
         image.close();
-        doc.save(pdf.getParent() + "/authenticated.pdf");
+
+        String pdfName = pdf.getName().replaceFirst("[.][^.]+$", ""); // Extension retirée
+        doc.save(pdf.getParent() + "/" + pdfName + "_authenticated.pdf");
+
         doc.close();
     }
 }

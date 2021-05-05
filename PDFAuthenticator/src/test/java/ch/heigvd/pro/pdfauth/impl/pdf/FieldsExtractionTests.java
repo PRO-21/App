@@ -22,6 +22,12 @@ public class FieldsExtractionTests extends ApplicationTest {
     }
 
     @Test
+    public void extractorShouldExtractAllFieldsInComplexForm() throws IOException {
+        List<Field> fields = PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_multiple_pages.pdf"));
+        Assertions.assertEquals(108, fields.size());
+    }
+
+    @Test
     public void fieldsListShouldBeEmptyIfPDFFormNotExists() throws IOException {
         List<Field> fields = PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_without_form.pdf"));
         Assertions.assertTrue(fields.isEmpty());
@@ -54,5 +60,11 @@ public class FieldsExtractionTests extends ApplicationTest {
         Assertions.assertEquals("Off",            fields.get(14).getValue());
         Assertions.assertEquals("Off",            fields.get(15).getValue());
         Assertions.assertEquals("[Blue]",         fields.get(16).getValue());
+    }
+
+    @Test
+    public void extractorShouldExtractSubfieldCorrectly() throws IOException {
+        List<Field> fields = PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_multiple_pages.pdf"));
+        Assertions.assertEquals("A1 et B", fields.get(14).getValue());
     }
 }

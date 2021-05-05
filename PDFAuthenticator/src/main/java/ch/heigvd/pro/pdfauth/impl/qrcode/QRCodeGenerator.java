@@ -1,6 +1,7 @@
 package ch.heigvd.pro.pdfauth.impl.qrcode;
 
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -17,6 +18,8 @@ public class QRCodeGenerator {
      * @return image du QR-Code
      */
     public static BufferedImage generateQRCodeImage(String text) throws WriterException {
+
+        Objects.requireNonNull(text);
 
         // Création d'un QR-Code de 50x50 pixels
         QRCodeWriter qrCodeWriter = new QRCodeWriter();

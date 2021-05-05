@@ -10,4 +10,9 @@ public class QRCodeGenerationTests {
     public void BufferedImageShouldNotBeNull() throws WriterException {
         Assertions.assertNotNull(QRCodeGenerator.generateQRCodeImage("test"));
     }
+
+    @Test
+    public void generateQRCodeImageShouldThrowException() {
+        Assertions.assertThrows(NullPointerException.class, () -> QRCodeGenerator.generateQRCodeImage(null));
+    }
 }

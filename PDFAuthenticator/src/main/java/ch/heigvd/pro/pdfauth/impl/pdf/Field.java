@@ -66,10 +66,10 @@ public class Field {
      */
     @Override
     public String toString() {
-        return "Field{" +
+        return "\nField{" +
                 "fieldName='" + fieldName + '\'' +
                 ", value='" + value + '\'' +
                 ", isProtected=" + isProtected.isSelected() +
-                '}';
+                "}";
     }
 }

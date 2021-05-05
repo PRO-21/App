@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.Base64;
+import java.util.Objects;
 
 // Classe permettant de gérer la communication avec l'API
 public class APIConnectionHandler {
@@ -17,6 +18,8 @@ public class APIConnectionHandler {
      * @return connexion URL à l'API en HTTP
      */
     public static HttpURLConnection getConnection(String resource) throws IOException {
+
+        Objects.requireNonNull(resource);
 
         URL url = new URL("https://pro.simeunovic.ch:8022/protest/api/" + resource);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -35,6 +38,9 @@ public class APIConnectionHandler {
      */
     public static void sendToAPI(HttpURLConnection conn, String jsonInputString) throws IOException {
 
+        Objects.requireNonNull(conn);
+        Objects.requireNonNull(jsonInputString);
+
         // Envoi des données à l'API
         try (BufferedOutputStream bos = new BufferedOutputStream(conn.getOutputStream())) {
             byte[] input = jsonInputString.getBytes();
@@ -49,6 +55,8 @@ public class APIConnectionHandler {
      * @return réponse de l'API sous forme JSON
      */
     public static String recvFromAPI(HttpURLConnection conn) {
+
+        Objects.requireNonNull(conn);
 
         StringBuilder response = new StringBuilder();
 
@@ -82,8 +90,6 @@ public class APIConnectionHandler {
      * @return true s'il existe et qu'il est valide, false sinon
      */
     public static boolean tokenExistsAndIsValid(String path) throws IOException {
-
-        // TODO : A voir dans quel dossier il faudra le créé lors de la release
 
         // Récupération du token existant pour demander à l'API s'il est toujours valide
         String token = getToken(path);
@@ -126,6 +132,10 @@ public class APIConnectionHandler {
      * @param path  chemin du fichier à créer
      */
     public static void createToken(String token, String path) throws IOException {
+
+        Objects.requireNonNull(token);
+        Objects.requireNonNull(path);
+
         PrintWriter printWriter = new PrintWriter(new FileWriter(path));
         printWriter.print(token);
         printWriter.close();
@@ -137,6 +147,8 @@ public class APIConnectionHandler {
      * @return le nom d'utilisateur
      */
     public static String extractUsernameFromToken(String path) throws IOException {
+
+        Objects.requireNonNull(path);
 
         // Instanciation du décodeur pour récupérer les infos du token JWT
         Base64.Decoder decoder = Base64.getDecoder();
@@ -152,6 +164,8 @@ public class APIConnectionHandler {
      * @return le token
      */
     public static String getToken(String path) throws IOException {
+
+        Objects.requireNonNull(path);
 
         File tokenFile = new File(path);
 

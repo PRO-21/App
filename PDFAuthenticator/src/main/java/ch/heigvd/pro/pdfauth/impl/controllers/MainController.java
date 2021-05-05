@@ -4,7 +4,6 @@ import ch.heigvd.pro.pdfauth.impl.api.APIConnectionHandler;
 import ch.heigvd.pro.pdfauth.impl.pdf.Field;
 import ch.heigvd.pro.pdfauth.impl.pdf.PDFHandler;
 import ch.heigvd.pro.pdfauth.impl.qrcode.QRCodeGenerator;
-import com.google.zxing.WriterException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -73,9 +72,9 @@ public class MainController implements Initializable {
         alert.setTitle("Aide");
         alert.setHeaderText("Instructions");
         alert.setContentText("1. Ouvrir un document PDF contenant un formulaire électronique avec le bouton \"Ouvrir...\"\n\n" +
-                "2. Cocher les champs à protéger en cliquant sur les coches de la colonne \"À protéger\"\n\n" +
-                "3. Sélectionner un emplacement libre dans le document PDF sur lequel sera apposé le QR-Code ou sélectionner \"Sur une nouvelle page\"\n\n" +
-                "4. Appuyer sur le bouton \"Valider\"");
+                             "2. Cocher les champs à protéger en cliquant sur les coches de la colonne \"À protéger\"\n\n" +
+                             "3. Sélectionner un emplacement libre dans le document PDF sur lequel sera apposé le QR-Code ou sélectionner \"Sur une nouvelle page\"\n\n" +
+                             "4. Appuyer sur le bouton \"Valider\"");
 
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.showAndWait();
@@ -235,7 +234,7 @@ public class MainController implements Initializable {
                     alert.showAndWait();
                 }
             }
-            catch (IOException | WriterException ex) {
+            catch (Exception ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erreur");
                 alert.setContentText(ex.getMessage());
@@ -266,7 +265,7 @@ public class MainController implements Initializable {
         // pour qu'elle utilise un autre type de HashMap qui lui, est ordonné.
         try {
             java.lang.reflect.Field changeMap = obj.getClass().getDeclaredField("map");
-            changeMap.setAccessible(true); // permet de rendre accessible la Map à modifier
+            changeMap.setAccessible(true);             // Permet de rendre accessible la Map à modifier
             changeMap.set(obj, new LinkedHashMap<>()); // Remplacement de HashMap par LinkedHashMap
             changeMap.setAccessible(false);
         }

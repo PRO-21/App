@@ -25,6 +25,11 @@ public class AuthenticationTests {
     }
 
     @Test
+    public void appShouldThrowExceptionIfResourceIsNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> APIConnectionHandler.getConnection(null));
+    }
+
+    @Test
     @Order(1)
     public void appShouldGetConnectionFromAPI() throws IOException {
 
