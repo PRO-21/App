@@ -79,14 +79,14 @@ public class APIConnectionHandler {
                     response.append(responseLine.trim());
                 }
             } catch (IOException e) { // Dans le cas où il y a un problème lors de la lecture du stream d'erreur
-                System.out.println("Error when reading error stream");
+                System.err.println("Error when reading error stream");
             }
         }
         return response.toString();
     }
 
     /**
-     * Fonction permettant de déterminer si le token existant existe et est toujours valide
+     * Fonction permettant de déterminer si le token existe et est toujours valide
      * @return true s'il existe et qu'il est valide, false sinon
      */
     public static boolean tokenExistsAndIsValid(String path) throws IOException {

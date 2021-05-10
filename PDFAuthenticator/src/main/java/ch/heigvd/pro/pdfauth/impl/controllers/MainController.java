@@ -67,6 +67,11 @@ public class MainController implements Initializable {
         }
     }
 
+    /**
+     * Fonction liée à l'appui du bouton "Aide" permettant d'afficher une fenêtre de dialogue affichant les étapes à
+     * réaliser pour authentifier un PDF
+     * @param actionEvent -
+     */
     public void openHelp(ActionEvent actionEvent) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Aide");
@@ -81,7 +86,7 @@ public class MainController implements Initializable {
     }
 
     /**
-     * Fonction appelée lors de l'appui sur le bouton "Ouvrir" sur la fenêtre. Elle s'occupe d'ouvrir l'explorateur de
+     * Fonction liée à l'appui du bouton "Ouvrir" sur la fenêtre. Elle s'occupe d'ouvrir l'explorateur de
      * fichiers et le PDF puis d'appeler la fonction populateTableView afin d'afficher les champs extraits
      * @param actionEvent -
      */
@@ -141,6 +146,8 @@ public class MainController implements Initializable {
         }
         else { // Sinon si la table est vide, il faut créer les colonnes et les remplir
 
+            // TODO : OPTIONAL FEATURE pour permettre d'éditer les noms des champs
+
             TableColumn<Field, String> fieldCol = new TableColumn<>("Champ");
             fieldCol.setCellValueFactory(new PropertyValueFactory<>("fieldName")); // Lien entre la classe Field
             fieldCol.setReorderable(false);                                           // et la colonne
@@ -166,7 +173,7 @@ public class MainController implements Initializable {
     }
 
     /**
-     * Fonction appelé lors de l'appui du bouton "Valider" sur la fenêtre. Elle va envoyer les champs à protéger à l'API
+     * Fonction liée à l'appui du bouton "Valider" sur la fenêtre. Elle va envoyer les champs à protéger à l'API
      * et récupérer la réponse de celle-ci
      * @param actionEvent -
      */
@@ -177,6 +184,8 @@ public class MainController implements Initializable {
             String jsonInputString = prepareFieldsToSend();
 
             try {
+
+                // Ouverture de la connexion avec comme ressource "cert" pour créer un certificat
                 HttpURLConnection conn = APIConnectionHandler.getConnection("cert");
                 conn.setRequestProperty("Authorization", "Bearer " + APIConnectionHandler.getToken("token"));
                 APIConnectionHandler.sendToAPI(conn, jsonInputString);
@@ -194,7 +203,7 @@ public class MainController implements Initializable {
                     if (onNewPage.isSelected()) {
                         PDFHandler.insertQRCodeInPDF(new File(filePath.getText()), qrcode);
                     }
-                    else { // Sinon, il a choisi un emplacement sur la dernière page du formulaire
+                    else { // Sinon, le QR-Code sera placé sur la dernière page du formulaire selon un emplacement choisi
 
                         // Coordonnées où sera placé le QR-Code dans le document PDF
                         int x = 0;

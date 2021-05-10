@@ -9,7 +9,6 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
-import org.apache.pdfbox.multipdf.PageExtractor;
 import org.apache.pdfbox.pdmodel.interactive.form.PDNonTerminalField;
 
 import java.awt.image.BufferedImage;
@@ -91,7 +90,7 @@ public class PDFHandler {
         // Conversion de la BufferedImage en PDImageXObject pour l'ajouter au PDF
         PDImageXObject pdfImage = JPEGFactory.createFromImage(doc, bufferedImage);
 
-        // Récupération du stream afin de pouvoir écrire "dessiner" l'image dans le PDF
+        // Récupération du stream afin de pouvoir "dessiner" l'image dans le PDF
         PDPageContentStream image = new PDPageContentStream(doc, newPage);
         image.drawImage(pdfImage, 50, 750);
 
@@ -107,7 +106,7 @@ public class PDFHandler {
     }
 
     /**
-     * Fonction permettant d'ajouter une image sur un PDF
+     * Fonction permettant d'ajouter une image sur un PDF en fonction de coordonnées x et y
      * @param pdf document PDF auquel ajouter l'image
      * @param bufferedImage image à ajouter au PDF
      * @param x coordonnée x
@@ -123,19 +122,16 @@ public class PDFHandler {
 
         PDDocument doc = PDDocument.load(pdf);
 
-        PageExtractor pe = new PageExtractor(doc);
-        int pageNo = pe.getEndPage() - 1;
-        PDPage page = doc.getPage(pageNo);
+        // Récupération du nombre de pages afin de mettre le QR-Code sur la dernière
+        int lastPageNo = doc.getNumberOfPages();
+        PDPage lastPage = doc.getPage(lastPageNo - 1);
 
         PDImageXObject pdfImage = JPEGFactory.createFromImage(doc, bufferedImage);
-
-        PDPageContentStream image = new PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND, false);
-
+        PDPageContentStream image = new PDPageContentStream(doc, lastPage, PDPageContentStream.AppendMode.APPEND, false);
         image.drawImage(pdfImage, x, y);
-
         image.close();
 
-        String pdfName = pdf.getName().replaceFirst("[.][^.]+$", ""); // Extension retirée
+        String pdfName = pdf.getName().replaceFirst("[.][^.]+$", "");
         doc.save(pdf.getParent() + "/" + pdfName + "_authenticated.pdf");
 
         doc.close();
