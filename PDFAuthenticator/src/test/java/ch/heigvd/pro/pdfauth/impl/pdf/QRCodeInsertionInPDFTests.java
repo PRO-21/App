@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+// Classe permettant de tester l'insertion du QR-Code dans un fichier PDF
 public class QRCodeInsertionInPDFTests {
 
     @Test
