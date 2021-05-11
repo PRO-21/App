@@ -32,7 +32,7 @@ public class App extends Application {
 
         try {
 
-            if (APIConnectionHandler.tokenExistsAndIsValid("token")) {
+            if (APIConnectionHandler.tokenExistsAndIsValid("./token")) {
                 root = FXMLLoader.load(getClass().getResource("main.fxml"));
             }
             else { // Si le token n'est pas/plus valide, chargement de la fenêtre de login
