@@ -141,6 +141,13 @@ public class APIConnectionHandler {
         printWriter.close();
     }
 
+    public static boolean deleteToken(String path) {
+
+        Objects.requireNonNull(path);
+        return new File(path).delete();
+    }
+
+
     /**
      * Fonction permettant d'extraire le nom d'utilisateur stocké dans le token
      * @param path chemin du fichier contenant le token

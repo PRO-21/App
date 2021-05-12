@@ -1,5 +1,6 @@
 package ch.heigvd.pro.pdfauth.impl.controllers;
 
+import ch.heigvd.pro.pdfauth.impl.App;
 import ch.heigvd.pro.pdfauth.impl.api.APIConnectionHandler;
 import ch.heigvd.pro.pdfauth.impl.pdf.Field;
 import ch.heigvd.pro.pdfauth.impl.pdf.PDFHandler;
@@ -293,5 +294,19 @@ public class MainController implements Initializable {
                 obj.put(field.getFieldName(), field.getValue());
         }
         return obj.toString();
+    }
+
+    public void userLogOut(ActionEvent actionEvent) {
+
+        if (APIConnectionHandler.deleteToken("token")) {
+            App a = new App();
+            a.changeScene("login.fxml");
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setContentText("Impossible de se déconnecter");
+            alert.showAndWait();
+        }
     }
 }

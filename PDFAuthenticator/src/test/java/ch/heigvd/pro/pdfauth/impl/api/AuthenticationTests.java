@@ -85,9 +85,14 @@ public class AuthenticationTests {
         Assertions.assertEquals("Dupontel Albert", APIConnectionHandler.extractUsernameFromToken("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder/token"));
     }
 
+    @Test
+    @Order(6)
+    public void appShouldDeleteTokenFile() {
+        Assertions.assertTrue(APIConnectionHandler.deleteToken("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder/token"));
+    }
+
     @AfterAll
-    public static void deleteTokenFile() {
-        tokenFile.delete();
+    public static void deleteTestFolder() {
         Assertions.assertTrue(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder").delete());
     }
 }
