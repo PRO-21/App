@@ -91,6 +91,12 @@ public class AuthenticationTests {
         Assertions.assertTrue(APIConnectionHandler.deleteToken("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder/token"));
     }
 
+    @Test
+    @Order(7)
+    public void deleteTokenShouldReturnFalseIfTokenIsAlreadyDeleted() {
+        Assertions.assertFalse(APIConnectionHandler.deleteToken("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder/token"));
+    }
+
     @AfterAll
     public static void deleteTestFolder() {
         Assertions.assertTrue(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder").delete());

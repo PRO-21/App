@@ -141,6 +141,11 @@ public class APIConnectionHandler {
         printWriter.close();
     }
 
+    /**
+     * Fonction permettant de supprimer le fichier contenant le token
+     * @param path chemin du fichier à supprimer
+     * @return true si le fichier a pu être supprimé, false sinon
+     */
     public static boolean deleteToken(String path) {
 
         Objects.requireNonNull(path);

@@ -105,6 +105,13 @@ public class MainController implements Initializable {
             try {
                 // Extraction des champs
                 fields = PDFHandler.extractFields(pdf);
+
+                // Si le PDF ne contient pas de formulaire
+                if (fields.isEmpty()) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setContentText("Aucun champ n'a été trouvé.");
+                    alert.showAndWait();
+                }
             }
             catch (IOException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -296,6 +303,10 @@ public class MainController implements Initializable {
         return obj.toString();
     }
 
+    /**
+     * Fonction liée à l'appui du bouton "Se déconnecter" permettant de renvoyer l'utilisateur à la fenêtre de connexion
+     * @param actionEvent -
+     */
     public void userLogOut(ActionEvent actionEvent) {
 
         if (APIConnectionHandler.deleteToken("token")) {
