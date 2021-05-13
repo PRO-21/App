@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -48,6 +49,7 @@ public class App extends Application {
         catch (IOException ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.setContentText(ex.getMessage());
             alert.showAndWait();
         }
@@ -66,6 +68,7 @@ public class App extends Application {
         catch (IOException ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.setContentText(ex.getMessage());
             alert.showAndWait();
         }

@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.Objects;
@@ -42,10 +43,9 @@ public class APIConnectionHandler {
         Objects.requireNonNull(jsonInputString);
 
         // Envoi des données à l'API
-        try (BufferedOutputStream bos = new BufferedOutputStream(conn.getOutputStream())) {
-            byte[] input = jsonInputString.getBytes();
-            bos.write(input, 0, input.length);
-            bos.flush();
+        try (PrintWriter pw = new PrintWriter(conn.getOutputStream(), false, StandardCharsets.UTF_8)) {
+            pw.println(jsonInputString);
+            pw.flush();
         }
     }
 

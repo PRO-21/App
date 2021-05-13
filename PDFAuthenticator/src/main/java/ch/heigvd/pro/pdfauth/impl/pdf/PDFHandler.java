@@ -32,25 +32,29 @@ public class PDFHandler {
 
         Objects.requireNonNull(pdf);
 
-        // Chargement du document PDF (et de son catalogue)
-        PDDocument pdDoc = PDDocument.load(pdf);
-        PDDocumentCatalog pdCatalog = pdDoc.getDocumentCatalog();
+        // Chargement du document PDF avec try-with-resources car dans le cas d'un lancement d'exception,
+        // le PDDocument se fermera automatiquement
+        try (PDDocument doc = PDDocument.load(pdf)) {
+            PDDocumentCatalog pdCatalog = doc.getDocumentCatalog();
 
-        // Récupération du formulaire interactif
-        PDAcroForm pdAcroForm = pdCatalog.getAcroForm();
+            // Récupération du formulaire interactif
+            PDAcroForm pdAcroForm = pdCatalog.getAcroForm();
 
-        fields = new ArrayList<>();
+            fields = new ArrayList<>();
 
-        // Si le formulaire interactif existe
-        if (pdAcroForm != null) {
+            // Si le formulaire interactif existe
+            if (pdAcroForm != null) {
 
-            // Extraction de tous les champs du formulaire PDF
-            for (PDField field : pdAcroForm.getFields()) {
-                extractAll(field);
+                // Extraction de tous les champs du formulaire PDF
+                for (PDField field : pdAcroForm.getFields()) {
+                    extractAll(field);
+                }
             }
+            return fields;
         }
-        pdDoc.close();
-        return fields;
+        catch (IOException ex) {
+            throw new IOException(ex);
+        }
     }
 
     /**
@@ -80,29 +84,29 @@ public class PDFHandler {
         Objects.requireNonNull(pdf);
         Objects.requireNonNull(bufferedImage);
 
-        // Chargement du document PDF
-        PDDocument doc = PDDocument.load(pdf);
+        try (PDDocument doc = PDDocument.load(pdf)) {
 
-        // Ajout d'une nouvelle page
-        PDPage newPage = new PDPage(PDRectangle.A4);
-        doc.addPage(newPage);
+            // Ajout d'une nouvelle page
+            PDPage newPage = new PDPage(PDRectangle.A4);
+            doc.addPage(newPage);
 
-        // Conversion de la BufferedImage en PDImageXObject pour l'ajouter au PDF
-        PDImageXObject pdfImage = JPEGFactory.createFromImage(doc, bufferedImage);
+            // Conversion de la BufferedImage en PDImageXObject pour l'ajouter au PDF
+            PDImageXObject pdfImage = JPEGFactory.createFromImage(doc, bufferedImage);
 
-        // Récupération du stream afin de pouvoir "dessiner" l'image dans le PDF
-        PDPageContentStream image = new PDPageContentStream(doc, newPage);
-        image.drawImage(pdfImage, 50, 750);
+            // Récupération du stream afin de pouvoir "dessiner" l'image dans le PDF
+            PDPageContentStream image = new PDPageContentStream(doc, newPage);
+            image.drawImage(pdfImage, 50, 750);
 
-        // Fermeture du stream
-        image.close();
+            // Fermeture du stream
+            image.close();
 
-        // Sauvegarde du document
-        String pdfName = pdf.getName().replaceFirst("[.][^.]+$", ""); // Extension retirée
-        doc.save(pdf.getParent() + "/" + pdfName + "_authenticated.pdf");
-
-        // Fermeture du document
-        doc.close();
+            // Sauvegarde du document
+            String pdfName = pdf.getName().replaceFirst("[.][^.]+$", ""); // Extension retirée
+            doc.save(pdf.getParent() + "/" + pdfName + "_authenticated.pdf");
+        }
+        catch (IOException ex) {
+            throw new IOException(ex); // Transmission de l'exception
+        }
     }
 
     /**
@@ -120,20 +124,22 @@ public class PDFHandler {
         if (x < 0 || y < 0)
             throw new IllegalArgumentException("Coords cannot be negative");
 
-        PDDocument doc = PDDocument.load(pdf);
+        try (PDDocument doc = PDDocument.load(pdf)) {
 
-        // Récupération du nombre de pages afin de mettre le QR-Code sur la dernière
-        int lastPageNo = doc.getNumberOfPages();
-        PDPage lastPage = doc.getPage(lastPageNo - 1);
+            // Récupération du nombre de pages afin de mettre le QR-Code sur la dernière
+            int lastPageNo = doc.getNumberOfPages();
+            PDPage lastPage = doc.getPage(lastPageNo - 1);
 
-        PDImageXObject pdfImage = JPEGFactory.createFromImage(doc, bufferedImage);
-        PDPageContentStream image = new PDPageContentStream(doc, lastPage, PDPageContentStream.AppendMode.APPEND, false);
-        image.drawImage(pdfImage, x, y);
-        image.close();
+            PDImageXObject pdfImage = JPEGFactory.createFromImage(doc, bufferedImage);
+            PDPageContentStream image = new PDPageContentStream(doc, lastPage, PDPageContentStream.AppendMode.APPEND, false);
+            image.drawImage(pdfImage, x, y);
+            image.close();
 
-        String pdfName = pdf.getName().replaceFirst("[.][^.]+$", "");
-        doc.save(pdf.getParent() + "/" + pdfName + "_authenticated.pdf");
-
-        doc.close();
+            String pdfName = pdf.getName().replaceFirst("[.][^.]+$", "");
+            doc.save(pdf.getParent() + "/" + pdfName + "_authenticated.pdf");
+        }
+        catch(IOException ex) {
+            throw new IOException(ex);
+        }
     }
 }

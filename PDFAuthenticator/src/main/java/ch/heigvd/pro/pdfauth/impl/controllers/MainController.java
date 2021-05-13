@@ -67,9 +67,14 @@ public class MainController implements Initializable {
 
         try {
             protectedBy.setText(APIConnectionHandler.extractUsernameFromToken("token"));
+            fieldCol.setReorderable(false);
+            valueCol.setReorderable(false);
+            protectedCol.setReorderable(false);
+
         } catch (IOException ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.setContentText(ex.getMessage());
             alert.showAndWait();
         }
@@ -123,6 +128,7 @@ public class MainController implements Initializable {
             catch (IOException ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erreur");
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.setContentText(ex.getMessage());
                 alert.showAndWait();
             }
@@ -158,12 +164,15 @@ public class MainController implements Initializable {
         // Liaison entre la classe Field et les colonnes
         fieldCol.setCellValueFactory(new PropertyValueFactory<>("fieldName"));
         fieldCol.setReorderable(false);
+        fieldCol.setResizable(true);
 
         valueCol.setCellValueFactory(new PropertyValueFactory<>("value"));
         valueCol.setReorderable(false);
+        valueCol.setResizable(true);
 
         protectedCol.setCellValueFactory(new PropertyValueFactory<>("isProtected"));
         protectedCol.setReorderable(false);
+        protectedCol.setResizable(true);
 
         // Permet de rendre ces deux colonnes éditables
         fieldCol.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -212,7 +221,6 @@ public class MainController implements Initializable {
                 conn.setRequestProperty("Authorization", "Bearer " + APIConnectionHandler.getToken("token"));
                 APIConnectionHandler.sendToAPI(conn, jsonInputString);
                 String response = APIConnectionHandler.recvFromAPI(conn);
-
                 JSONObject obj = new JSONObject(response);
                 int HttpCode = obj.getJSONObject("status").getInt("code");
 
@@ -252,6 +260,7 @@ public class MainController implements Initializable {
 
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Information");
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                     alert.setHeaderText(null);
                     alert.setContentText("QR-Code ajouté au document !");
                     alert.showAndWait();
@@ -259,6 +268,7 @@ public class MainController implements Initializable {
                 else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Erreur");
+                    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                     alert.setHeaderText("Aucun champ à protéger sélectionné");
                     String cause = obj.getJSONObject("status").getString("message");
                     alert.setContentText(cause);
@@ -268,6 +278,7 @@ public class MainController implements Initializable {
             catch (Exception ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erreur");
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.setContentText(ex.getMessage());
                 alert.showAndWait();
             }
@@ -275,6 +286,7 @@ public class MainController implements Initializable {
         else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.setContentText("Veuillez d'abord renseigner un fichier PDF");
             alert.showAndWait();
         }
@@ -330,6 +342,7 @@ public class MainController implements Initializable {
         else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.setContentText("Impossible de se déconnecter");
             alert.showAndWait();
         }

@@ -80,7 +80,7 @@ public class QRCodeInsertionInPDFTests {
 
         File pdf = new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test.pdf");
         BufferedImage qrcode = QRCodeGenerator.generateQRCodeImage("test");
-        Assertions.assertThrows(FileNotFoundException.class, () -> PDFHandler.insertQRCodeInPDF(pdf, qrcode, 500, 25));
+        Assertions.assertThrows(IOException.class, () -> PDFHandler.insertQRCodeInPDF(pdf, qrcode, 500, 25));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class QRCodeInsertionInPDFTests {
 
         File word = new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_word.docx");
         BufferedImage qrcode = QRCodeGenerator.generateQRCodeImage("test");
-        Assertions.assertThrows(FileNotFoundException.class, () -> PDFHandler.insertQRCodeInPDF(word, qrcode, 500, 25));
+        Assertions.assertThrows(IOException.class, () -> PDFHandler.insertQRCodeInPDF(word, qrcode, 500, 25));
     }
 
 }

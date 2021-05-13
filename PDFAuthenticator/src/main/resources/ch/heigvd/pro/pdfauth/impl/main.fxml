@@ -14,11 +14,11 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane hgap="15.0" minHeight="300.0" minWidth="620.0" prefHeight="360.0" prefWidth="786.0" vgap="15.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.heigvd.pro.pdfauth.impl.controllers.MainController">
+<GridPane hgap="15.0" minHeight="300.0" minWidth="620.0" prefHeight="360.0" prefWidth="808.0" vgap="15.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.heigvd.pro.pdfauth.impl.controllers.MainController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="347.79998779296875" minWidth="10.0" prefWidth="342.4000244140625" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="249.60007324218748" minWidth="10.0" prefWidth="203.4000244140625" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="110.20007324218744" minWidth="0.0" prefWidth="60.19997558593752" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.20007324218744" minWidth="0.0" prefWidth="60.19997558593752" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
@@ -38,9 +38,9 @@
       <Button minHeight="25.0" minWidth="60.0" mnemonicParsing="false" onAction="#sendData" text="Valider" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
       <TableView fx:id="fieldsList" editable="true" prefHeight="130.0" prefWidth="346.0" GridPane.rowIndex="3">
          <columns>
-            <TableColumn fx:id="fieldCol" maxWidth="-1.0" minWidth="140.0" onEditCommit="#userEditFieldName" prefWidth="-1.0" text="Champ" />
-            <TableColumn fx:id="valueCol" maxWidth="-1.0" minWidth="100.0" onEditCommit="#userEditValue" prefWidth="-1.0" text="Valeur" />
-            <TableColumn fx:id="protectedCol" editable="false" maxWidth="104.800048828125" minWidth="50.0" prefWidth="104.800048828125" style="-fx-alignment: CENTER;" text="À protéger" />
+            <TableColumn fx:id="fieldCol" maxWidth="400.0" minWidth="140.0" onEditCommit="#userEditFieldName" prefWidth="-1.0" text="Champ" />
+            <TableColumn fx:id="valueCol" maxWidth="400.0" minWidth="100.0" onEditCommit="#userEditValue" prefWidth="-1.0" text="Valeur" />
+            <TableColumn fx:id="protectedCol" editable="false" maxWidth="105.0" minWidth="50.0" prefWidth="105.0" style="-fx-alignment: CENTER;" text="À protéger" />
          </columns></TableView>
       <Pane prefHeight="198.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <children>
