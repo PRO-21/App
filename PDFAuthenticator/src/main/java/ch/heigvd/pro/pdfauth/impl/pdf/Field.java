@@ -26,11 +26,6 @@ public class Field {
         isProtected = new CheckBox();
     }
 
-    public void setFieldName(String fieldName) {
-        Objects.requireNonNull(fieldName);
-        this.fieldName = fieldName;
-    }
-
     /**
      * Getter retournant le nom du champ
      * @return nom du champ
@@ -39,10 +34,13 @@ public class Field {
         return fieldName;
     }
 
-
-    public void setValue(String value) {
-        Objects.requireNonNull(value);
-        this.value = value;
+    /**
+     * Setter permettant de modifier le nom du champ
+     * @param fieldName nouveau nom du champ
+     */
+    public void setFieldName(String fieldName) {
+        Objects.requireNonNull(fieldName);
+        this.fieldName = fieldName;
     }
 
     /**
@@ -51,6 +49,15 @@ public class Field {
      */
     public String getValue() {
         return value;
+    }
+
+    /**
+     * Setter permettant de modifier la valeur du champ
+     * @param value nouvelle valeur du champ
+     */
+    public void setValue(String value) {
+        Objects.requireNonNull(value);
+        this.value = value;
     }
 
     /**
