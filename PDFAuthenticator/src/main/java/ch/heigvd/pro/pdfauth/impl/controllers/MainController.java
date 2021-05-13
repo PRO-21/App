@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import org.json.JSONObject;
@@ -31,6 +32,12 @@ import java.util.ResourceBundle;
 // Classe permettant de récupérer les valeurs des champs selon les events qui se passe sur la fenêtre principale
 public class MainController implements Initializable {
 
+    @FXML
+    private TableColumn<Field, String> fieldCol;
+    @FXML
+    private TableColumn<Field, String> valueCol;
+    @FXML
+    private TableColumn<Field, String> protectedCol;
     @FXML
     private RadioButton topLeft;
     @FXML
@@ -148,36 +155,43 @@ public class MainController implements Initializable {
         ObservableList<Field> data = FXCollections.observableArrayList();
         fieldsList.setItems(data);
 
-        // Si les colonnes ont déjà été créées il faut seulement remettre les données dans l'ObservableList
-        if (!fieldsList.getColumns().isEmpty()) {
-            data.addAll(fields);
-        }
-        else { // Sinon si la table est vide, il faut créer les colonnes et les remplir
+        // Liaison entre la classe Field et les colonnes
+        fieldCol.setCellValueFactory(new PropertyValueFactory<>("fieldName"));
+        fieldCol.setReorderable(false);
 
-            // TODO : OPTIONAL FEATURE pour permettre d'éditer les noms des champs
+        valueCol.setCellValueFactory(new PropertyValueFactory<>("value"));
+        valueCol.setReorderable(false);
 
-            TableColumn<Field, String> fieldCol = new TableColumn<>("Champ");
-            fieldCol.setCellValueFactory(new PropertyValueFactory<>("fieldName")); // Lien entre la classe Field
-            fieldCol.setReorderable(false);                                           // et la colonne
-            fieldCol.setPrefWidth(140);
+        protectedCol.setCellValueFactory(new PropertyValueFactory<>("isProtected"));
+        protectedCol.setReorderable(false);
 
-            TableColumn<Field, String> valueCol = new TableColumn<>("Valeur");
-            valueCol.setCellValueFactory(new PropertyValueFactory<>("value"));
-            valueCol.setReorderable(false);
-            valueCol.setPrefWidth(100);
+        // Permet de rendre ces deux colonnes éditables
+        fieldCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        valueCol.setCellFactory(TextFieldTableCell.forTableColumn());
 
-            TableColumn<Field, CheckBox> protectedCol = new TableColumn<>("À protéger");
-            protectedCol.setCellValueFactory(new PropertyValueFactory<>("isProtected"));
-            protectedCol.setReorderable(false);
-            protectedCol.setStyle("-fx-alignment: CENTER;");
-            protectedCol.setMinWidth(50);
+        // Ajout des données dans l'ObservableList
+        data.addAll(fields);
+    }
 
-            // Ajout des données dans l'ObservableList
-            data.addAll(fields);
+    /**
+     * Fonction liée à la modification de la valeur d'une cellule de la colonne "Champ"
+     * @param cellEditEvent cellule dont la valeur a été modifiée
+     */
+    public void userEditFieldName(TableColumn.CellEditEvent<Field, String> cellEditEvent) {
+        Field field = fieldsList.getSelectionModel().getSelectedItem();
 
-            // Ajout des colonnes à la TableView
-            fieldsList.getColumns().addAll(fieldCol, valueCol, protectedCol);
-        }
+        // Empêche de modifier la valeur du champ pour mettre un nom de champ vide à la place
+        if (!cellEditEvent.getNewValue().isBlank())
+            field.setFieldName(cellEditEvent.getNewValue());
+    }
+
+    /**
+     * Fonction liée à la modification de la valeur d'une cellule de la colonne "Valeur"
+     * @param cellEditEvent cellule dont la valeur a été modifiée
+     */
+    public void userEditValue(TableColumn.CellEditEvent<Field, String> cellEditEvent) {
+        Field field = fieldsList.getSelectionModel().getSelectedItem();
+        field.setValue(cellEditEvent.getNewValue());
     }
 
     /**

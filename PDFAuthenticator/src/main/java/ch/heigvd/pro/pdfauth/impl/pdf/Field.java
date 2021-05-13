@@ -7,8 +7,8 @@ import java.util.Objects;
 // Classe représentant un champ extrait du PDF à protéger
 public class Field {
 
-    final private String fieldName; // Nom du champ (Text box pour le prénom, pour une adresse, etc...)
-    final private String value;     // Valeur du champ
+    private String fieldName; // Nom du champ (Text box pour le prénom, pour une adresse, etc...)
+    private String value;     // Valeur du champ
     private CheckBox isProtected;   // S'il est à protéger ou pas
 
     /**
@@ -26,12 +26,23 @@ public class Field {
         isProtected = new CheckBox();
     }
 
+    public void setFieldName(String fieldName) {
+        Objects.requireNonNull(fieldName);
+        this.fieldName = fieldName;
+    }
+
     /**
      * Getter retournant le nom du champ
      * @return nom du champ
      */
     public String getFieldName() {
         return fieldName;
+    }
+
+
+    public void setValue(String value) {
+        Objects.requireNonNull(value);
+        this.value = value;
     }
 
     /**
