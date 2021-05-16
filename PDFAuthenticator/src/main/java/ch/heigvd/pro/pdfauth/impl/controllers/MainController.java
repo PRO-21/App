@@ -157,29 +157,33 @@ public class MainController implements Initializable {
      */
     private void populateTableView(List<Field> fields) {
 
-        // Liste permettant de faire le lien entre la classe Field et les colonnes à afficher
-        ObservableList<Field> data = FXCollections.observableArrayList();
-        fieldsList.setItems(data);
+        // Ne remplit les colonnes que si au moins un champ existe dans le document PDF
+        if (fields != null) {
 
-        // Liaison entre la classe Field et les colonnes
-        fieldCol.setCellValueFactory(new PropertyValueFactory<>("fieldName"));
-        fieldCol.setReorderable(false);
-        fieldCol.setResizable(true);
+            // Liste permettant de faire le lien entre la classe Field et les colonnes à afficher
+            ObservableList<Field> data = FXCollections.observableArrayList();
+            fieldsList.setItems(data);
 
-        valueCol.setCellValueFactory(new PropertyValueFactory<>("value"));
-        valueCol.setReorderable(false);
-        valueCol.setResizable(true);
+            // Liaison entre la classe Field et les colonnes
+            fieldCol.setCellValueFactory(new PropertyValueFactory<>("fieldName"));
+            fieldCol.setReorderable(false);
+            fieldCol.setResizable(true);
 
-        protectedCol.setCellValueFactory(new PropertyValueFactory<>("isProtected"));
-        protectedCol.setReorderable(false);
-        protectedCol.setResizable(true);
+            valueCol.setCellValueFactory(new PropertyValueFactory<>("value"));
+            valueCol.setReorderable(false);
+            valueCol.setResizable(true);
 
-        // Permet de rendre ces deux colonnes éditables
-        fieldCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        valueCol.setCellFactory(TextFieldTableCell.forTableColumn());
+            protectedCol.setCellValueFactory(new PropertyValueFactory<>("isProtected"));
+            protectedCol.setReorderable(false);
+            protectedCol.setResizable(true);
 
-        // Ajout des données dans l'ObservableList
-        data.addAll(fields);
+            // Permet de rendre ces deux colonnes éditables
+            fieldCol.setCellFactory(TextFieldTableCell.forTableColumn());
+            valueCol.setCellFactory(TextFieldTableCell.forTableColumn());
+
+            // Ajout des données dans l'ObservableList
+            data.addAll(fields);
+        }
     }
 
     /**

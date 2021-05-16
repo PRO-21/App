@@ -35,9 +35,8 @@ public class FieldsExtractionTests extends ApplicationTest {
 
     @Test
     public void extractorShouldThrowExceptionIfNotPDF() {
-        Assertions.assertThrows(IOException.class, () -> {
-            PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_word.docx"));
-        });
+        Assertions.assertThrows(IOException.class, () ->
+                PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_word.docx")));
     }
 
     @Test
@@ -66,5 +65,11 @@ public class FieldsExtractionTests extends ApplicationTest {
     public void extractorShouldExtractSubfieldCorrectly() throws IOException {
         List<Field> fields = PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_multiple_pages.pdf"));
         Assertions.assertEquals("A1 et B", fields.get(14).getValue());
+    }
+
+    @Test
+    public void extractorShouldThrowExceptionIfFakePDF() {
+        Assertions.assertThrows(IOException.class, () ->
+                PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_fake_pdf.pdf")));
     }
 }
