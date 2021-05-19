@@ -7,6 +7,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -46,6 +48,14 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
+      <ImageView fitHeight="51.0" fitWidth="58.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="RIGHT">
+         <image>
+            <Image url="@pdf_icon.png" />
+         </image>
+         <GridPane.margin>
+            <Insets right="20.0" />
+         </GridPane.margin>
+      </ImageView>
    </children>
    <padding>
       <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
