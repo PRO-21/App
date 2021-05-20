@@ -3,17 +3,22 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-<GridPane hgap="15.0" maxHeight="300.0" maxWidth="600.0" minHeight="300.0" minWidth="600.0" prefHeight="300.0" prefWidth="600.0" vgap="15.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.heigvd.pro.pdfauth.impl.controllers.MainController">
+<GridPane hgap="15.0" minHeight="300.0" minWidth="620.0" prefHeight="360.0" prefWidth="808.0" vgap="15.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.heigvd.pro.pdfauth.impl.controllers.MainController">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="347.79998779296875" minWidth="10.0" prefWidth="331.79998779296875" />
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="138.20001220703125" minWidth="10.0" prefWidth="54.20001220703125" />
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="347.79998779296875" minWidth="10.0" prefWidth="342.4000244140625" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="249.60007324218748" minWidth="10.0" prefWidth="203.4000244140625" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.20007324218744" minWidth="0.0" prefWidth="60.19997558593752" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
@@ -23,25 +28,108 @@
   </rowConstraints>
    <children>
       <Label text="Rechercher un PDF à protéger : " />
-      <Button mnemonicParsing="false" onAction="#openPDF" text="Ouvrir..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Button minHeight="25.0" minWidth="60.0" mnemonicParsing="false" onAction="#openPDF" text="Ouvrir..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <TextField fx:id="filePath" editable="false" GridPane.rowIndex="1" />
       <Label text="Champs détectés :" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets top="40.0" />
          </GridPane.margin>
       </Label>
-      <Label text="Protégé par :" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <Button minHeight="25.0" minWidth="60.0" mnemonicParsing="false" onAction="#sendData" text="Valider" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
+      <TableView fx:id="fieldsList" editable="true" prefHeight="130.0" prefWidth="346.0" GridPane.rowIndex="3">
+         <columns>
+            <TableColumn fx:id="fieldCol" maxWidth="400.0" minWidth="140.0" onEditCommit="#userEditFieldName" prefWidth="-1.0" text="Champ" />
+            <TableColumn fx:id="valueCol" maxWidth="400.0" minWidth="100.0" onEditCommit="#userEditValue" prefWidth="-1.0" text="Valeur" />
+            <TableColumn fx:id="protectedCol" editable="false" maxWidth="105.0" minWidth="50.0" prefWidth="105.0" style="-fx-alignment: CENTER;" text="À protéger" />
+         </columns></TableView>
+      <Pane prefHeight="198.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         <children>
+            <Label text="Emplacement du QR-Code dans le PDF : " />
+            <Pane layoutX="90.0" layoutY="48.0" prefHeight="111.0" prefWidth="85.0" style="-fx-background-color: #fff;">
+               <children>
+                  <Label layoutX="28.0" layoutY="43.0" minHeight="25.0" minWidth="29.0" text="PDF">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <GridPane layoutX="73.0" layoutY="17.0" prefHeight="172.0" prefWidth="142.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="164.7999755859375" minWidth="10.0" prefWidth="61.7999755859375" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="156.40004501342773" minWidth="10.0" prefWidth="78.6000244140625" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="92.8" minHeight="10.0" prefHeight="83.2000244140625" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="86.200048828125" minHeight="0.0" prefHeight="83.19997558593748" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <RadioButton fx:id="topLeft" mnemonicParsing="false" selected="true">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                     <toggleGroup>
+                        <ToggleGroup fx:id="QRCodeLocation" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton fx:id="topRight" mnemonicParsing="false" prefHeight="18.0" prefWidth="9.0" toggleGroup="$QRCodeLocation" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </RadioButton>
+                  <RadioButton fx:id="bottomLeft" mnemonicParsing="false" toggleGroup="$QRCodeLocation" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </RadioButton>
+                  <RadioButton fx:id="bottomRight" mnemonicParsing="false" toggleGroup="$QRCodeLocation" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </RadioButton>
+               </children>
+            </GridPane>
+            <GridPane layoutX="-2.0" layoutY="162.0" prefHeight="50.0" prefWidth="186.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="144.8" minWidth="10.0" prefWidth="137.9999755859375" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="53.599999999999994" minWidth="1.5999755859375" prefWidth="48.000024414062494" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label minHeight="18.0" minWidth="170.0" text="Sur une nouvelle page :" />
+                  <RadioButton fx:id="onNewPage" mnemonicParsing="false" prefHeight="19.0" prefWidth="6.0" toggleGroup="$QRCodeLocation" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin></RadioButton>
+               </children>
+            </GridPane>
+         </children>
+      </Pane>
+      <GridPane prefHeight="50.0" prefWidth="270.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="117.2000732421875" minWidth="10.0" prefWidth="94.3999755859375" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="174.0" minWidth="10.0" prefWidth="156.00002441406247" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label fx:id="protectedBy" prefHeight="18.0" prefWidth="157.0" GridPane.columnIndex="1">
+               <GridPane.margin>
+                  <Insets top="40.0" />
+               </GridPane.margin>
+            </Label>
+            <Label minHeight="16.0" minWidth="75.0" prefHeight="16.0" prefWidth="94.0" text="Protégé par :" GridPane.halignment="LEFT" GridPane.valignment="BOTTOM" />
+         </children>
+      </GridPane>
+      <Button minHeight="25.0" minWidth="60.0" mnemonicParsing="false" onAction="#openHelp" text="Aide" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+      <Button minHeight="25.0" minWidth="110.0" mnemonicParsing="false" onAction="#userLogOut" text="Se déconnecter" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
          <GridPane.margin>
-            <Insets top="40.0" />
+            <Insets top="80.0" />
          </GridPane.margin>
-      </Label>
-      <Button mnemonicParsing="false" onAction="#sendData" text="Valider" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="BOTTOM" />
-      <TableView fx:id="fieldsList" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3" />
-      <Label fx:id="protectedBy" GridPane.columnIndex="2" GridPane.rowIndex="2">
-         <GridPane.margin>
-            <Insets top="40.0" />
-         </GridPane.margin>
-      </Label>
+      </Button>
    </children>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

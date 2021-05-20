@@ -5,6 +5,7 @@ import ch.heigvd.pro.pdfauth.impl.App;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -30,6 +31,7 @@ public class LoginController {
         catch (IOException ex) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.setContentText(ex.getMessage());
             alert.showAndWait();
         }
@@ -60,7 +62,7 @@ public class LoginController {
         if (HttpCode == HttpURLConnection.HTTP_OK) {
 
             String token = obj.getJSONObject("data").getString("token");
-            APIConnectionHandler.createToken(token, "src/main/resources/ch/heigvd/pro/pdfauth/impl/token");
+            APIConnectionHandler.createToken(token, "token");
 
             // Accès à la fenêtre principale
             a.changeScene("main.fxml");
@@ -68,6 +70,7 @@ public class LoginController {
         else { // Sinon affiche une erreur et demande de retaper l'email et le mot de passe
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur de connexion");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.setHeaderText("Veuillez réessayer");
             String cause = obj.getJSONObject("status").getString("message");
             alert.setContentText(cause);
@@ -83,6 +86,6 @@ public class LoginController {
      */
     public void userCreateAccount(ActionEvent actionEvent) {
         App a = new App();
-        a.getHostServices().showDocument("https://pro.simeunovic.ch:8022/protest/view/signup.php");
+        a.getHostServices().showDocument(APIConnectionHandler.SITE_BASE + "/view/signup.php");
     }
 }

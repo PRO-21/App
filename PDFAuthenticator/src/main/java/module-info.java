@@ -3,6 +3,9 @@ module ch.heigvd.pro.pdfauth.impl {
     requires javafx.fxml;
     requires org.json;
     requires org.apache.pdfbox;
+    requires java.desktop;
+    requires com.google.zxing;
+    requires com.google.zxing.javase;
 
     opens ch.heigvd.pro.pdfauth.impl to javafx.fxml;
     exports ch.heigvd.pro.pdfauth.impl;

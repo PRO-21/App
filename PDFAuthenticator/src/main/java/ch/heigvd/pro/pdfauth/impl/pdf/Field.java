@@ -7,8 +7,8 @@ import java.util.Objects;
 // Classe représentant un champ extrait du PDF à protéger
 public class Field {
 
-    final private String fieldName; // Nom du champ (Text box pour le prénom, pour une adresse, etc...)
-    final private String value;     // Valeur du champ
+    private String fieldName; // Nom du champ (Text box pour le prénom, pour une adresse, etc...)
+    private String value;     // Valeur du champ
     private CheckBox isProtected;   // S'il est à protéger ou pas
 
     /**
@@ -35,11 +35,29 @@ public class Field {
     }
 
     /**
+     * Setter permettant de modifier le nom du champ
+     * @param fieldName nouveau nom du champ
+     */
+    public void setFieldName(String fieldName) {
+        Objects.requireNonNull(fieldName);
+        this.fieldName = fieldName;
+    }
+
+    /**
      * Getter retournant la valeur du champ
      * @return valeur du champ
      */
     public String getValue() {
         return value;
+    }
+
+    /**
+     * Setter permettant de modifier la valeur du champ
+     * @param value nouvelle valeur du champ
+     */
+    public void setValue(String value) {
+        Objects.requireNonNull(value);
+        this.value = value;
     }
 
     /**
@@ -66,10 +84,10 @@ public class Field {
      */
     @Override
     public String toString() {
-        return "Field{" +
+        return "\nField{" +
                 "fieldName='" + fieldName + '\'' +
                 ", value='" + value + '\'' +
                 ", isProtected=" + isProtected.isSelected() +
-                '}';
+                "}";
     }
 }

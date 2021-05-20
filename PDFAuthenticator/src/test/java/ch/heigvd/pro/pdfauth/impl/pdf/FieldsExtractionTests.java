@@ -17,26 +17,31 @@ public class FieldsExtractionTests extends ApplicationTest {
 
     @Test
     public void extractorShouldExtractAllFields() throws IOException {
-        List<Field> fields = PDFieldsExtractor.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test.pdf"));
+        List<Field> fields = PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test.pdf"));
         Assertions.assertEquals(17, fields.size());
     }
 
     @Test
+    public void extractorShouldExtractAllFieldsInComplexForm() throws IOException {
+        List<Field> fields = PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_multiple_pages.pdf"));
+        Assertions.assertEquals(108, fields.size());
+    }
+
+    @Test
     public void fieldsListShouldBeEmptyIfPDFFormNotExists() throws IOException {
-        List<Field> fields = PDFieldsExtractor.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_without_form.pdf"));
+        List<Field> fields = PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_without_form.pdf"));
         Assertions.assertTrue(fields.isEmpty());
     }
 
     @Test
     public void extractorShouldThrowExceptionIfNotPDF() {
-        Assertions.assertThrows(IOException.class, () -> {
-            PDFieldsExtractor.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_word.docx"));
-        });
+        Assertions.assertThrows(IOException.class, () ->
+                PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_word.docx")));
     }
 
     @Test
     public void extractorShouldExtractFieldsCorrectly() throws IOException {
-        List<Field> fields = PDFieldsExtractor.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test.pdf"));
+        List<Field> fields = PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test.pdf"));
         Assertions.assertEquals("Albert",         fields.get(0).getValue());
         Assertions.assertEquals("Dupontel",       fields.get(1).getValue());
         Assertions.assertEquals("Rue de la gare", fields.get(2).getValue());
@@ -54,5 +59,17 @@ public class FieldsExtractionTests extends ApplicationTest {
         Assertions.assertEquals("Off",            fields.get(14).getValue());
         Assertions.assertEquals("Off",            fields.get(15).getValue());
         Assertions.assertEquals("[Blue]",         fields.get(16).getValue());
+    }
+
+    @Test
+    public void extractorShouldExtractSubfieldCorrectly() throws IOException {
+        List<Field> fields = PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_multiple_pages.pdf"));
+        Assertions.assertEquals("A1 et B", fields.get(14).getValue());
+    }
+
+    @Test
+    public void extractorShouldThrowExceptionIfFakePDF() {
+        Assertions.assertThrows(IOException.class, () ->
+                PDFHandler.extractFields(new File("src/test/java/ch/heigvd/pro/pdfauth/impl/pdf/test_folder/test_fake_pdf.pdf")));
     }
 }
