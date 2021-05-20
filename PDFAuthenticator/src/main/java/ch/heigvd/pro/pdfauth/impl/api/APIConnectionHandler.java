@@ -13,6 +13,8 @@ import java.util.Objects;
 // Classe permettant de gérer la communication avec l'API
 public class APIConnectionHandler {
 
+    public static final String SITE_BASE = "https://pro.simeunovic.ch:8022";
+
     /**
      * Fonction permettant de se connecter à l'API
      * @param resource type de ressource à demander à l'API
@@ -22,7 +24,7 @@ public class APIConnectionHandler {
 
         Objects.requireNonNull(resource);
 
-        URL url = new URL("https://pro.simeunovic.ch:8022/protest/api/" + resource);
+        URL url = new URL(SITE_BASE + "/api/" + resource);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json");

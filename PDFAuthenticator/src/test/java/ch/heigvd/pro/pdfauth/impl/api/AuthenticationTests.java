@@ -104,7 +104,7 @@ public class AuthenticationTests {
     @Test
     @Order(6)
     public void appShouldExtractUsernameFromTokenCorrectly() throws IOException {
-        Assertions.assertEquals("Dupontel Albert", APIConnectionHandler.extractUsernameFromToken("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder/token"));
+        Assertions.assertEquals("Albert Dupontel", APIConnectionHandler.extractUsernameFromToken("src/test/java/ch/heigvd/pro/pdfauth/impl/api/test_folder/token"));
     }
 
     @Test

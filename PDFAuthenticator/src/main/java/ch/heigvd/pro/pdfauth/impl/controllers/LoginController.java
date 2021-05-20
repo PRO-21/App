@@ -86,6 +86,6 @@ public class LoginController {
      */
     public void userCreateAccount(ActionEvent actionEvent) {
         App a = new App();
-        a.getHostServices().showDocument("https://pro.simeunovic.ch:8022/protest/view/signup.php");
+        a.getHostServices().showDocument(APIConnectionHandler.SITE_BASE + "/view/signup.php");
     }
 }
