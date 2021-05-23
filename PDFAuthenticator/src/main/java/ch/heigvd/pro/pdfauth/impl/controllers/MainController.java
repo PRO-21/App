@@ -231,7 +231,7 @@ public class MainController implements Initializable {
                 // Si l'API renvoie un code 200
                 if (HttpCode == HttpURLConnection.HTTP_OK) {
                     String certificateID = obj.getJSONObject("data").getString("idCertificat");
-                    BufferedImage qrcode = QRCodeGenerator.generateQRCodeImage("https://pro.simeunovic.ch:8022/protest/view/scan.php?id=" + certificateID);
+                    BufferedImage qrcode = QRCodeGenerator.generateQRCodeImage(APIConnectionHandler.SITE_BASE + "/protest/view/scan.php?id=" + certificateID);
 
                     // Si l'utilisateur décide de mettre le QR-Code sur une nouvelle page
                     if (onNewPage.isSelected()) {
